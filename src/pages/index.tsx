@@ -1,63 +1,6 @@
-// import { useState } from 'react';
-// import styles from './index.module.css';
-
-// const Home = () => {
-//   const [bombMap, setbombMap] = useState([
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//     [0, 0, 0, 0, 3, 0, 0, 0, 0],
-//     [0, 0, 0, 1, 2, 3, 0, 0, 0],
-//     [0, 0, 3, 2, 1, 0, 0, 0, 0],
-//     [0, 0, 0, 3, 0, 0, 0, 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//   ]);
-//   const [userInputs, setuserInputs] = useState([
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//     [0, 0, 0, 0, 3, 0, 0, 0, 0],
-//     [0, 0, 0, 1, 2, 3, 0, 0, 0],
-//     [0, 0, 3, 2, 1, 0, 0, 0, 0],
-//     [0, 0, 0, 3, 0, 0, 0, 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//   ]);
-//   const board = structuredClone(bombMap);
-//   // for(y){//再起関数って何
-//   //   for(x)
-//   // }
-//   const [sampleVal, setsampleVal] = useState(0);
-//   console.log(sampleVal);
-//   const clickHandler = (x: number, y: number) => {
-//     if (board[y][x] === 0) return;
-//     console.log(x, y);
-
-//     return (
-//       <div className={styles.container}>
-//         <div
-//           className={styles.sampleStyle}
-//           style={{ backgroundPosition: `${sampleVal * -30}px` }}
-//         />
-//         <button onClick={() => setsampleVal((val) => (val + 1) % 14)}>Sample</button>
-
-//         <div className={styles.minesweeper}>
-//           <div className={styles.header}>
-//             <div className={styles.counter}>10</div>
-//             <div className={styles.face}>😊</div>
-//             <div className={styles.timer}>000</div>
-//           </div>
-//           <div className={styles.grid}>
-//             {Array.from({ length: 81 }, () => (
-//               <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)} />
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   };
-// };
-
-// export default Home;
+// const board = structuredClone(bombMap);
+// // for(y){
+// //   for(x)
 
 // // ボード ます 爆弾数 リセットボタン タイマー １－８未開旗爆弾   CSS（タイマーとかの数字は画像ORCSS）
 // // 爆弾あるない０，１
@@ -74,30 +17,56 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
+  // 0 -> 未クリック
+  // 1 -> 左クリック
+  // 2 -> はてな
+  // 3 -> 旗
+  const [userInputs, setuserInputs] = useState<(0 | 1 | 2 | 3)[][]>([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+
+  const bombCount = 10;
+  // 0 -> ボム無し
+  // 1 -> ボム有り
   const [bombMap, setBombMap] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const [userInputs, setUserInputs] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
+  const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
+  const isFailure = userInputs.some((row, y) =>
+    row.some((input, x) => input === 1 && bombMap[y][x] === 1),
+  );
 
+  // -1 -> 石
+  // 0 -> 画像無しセル
+  // 1~8 -> 数字セル
+  // 9 -> 石とはてな
+  // 10 -> 石と旗
+  // 11 -> ボムセル
+  const board: number[][] = [];
+
+  // const board = structuredClone(bombMap);
+  // // for(y){
+  // //   for(x)
+  // // }
   const [sampleVal, setSampleVal] = useState(0);
 
   const clickHandler = (x, y) => {
@@ -105,13 +74,13 @@ const Home = () => {
     newUserInputs[y][x] = 1; // 仮に1をクリックされた印として使用
     console.log(x, y);
 
-    setUserInputs(newUserInputs);
+    setuserInputs(newUserInputs);
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.sampleStyle} style={{ backgroundPosition: `${sampleVal * -30}px` }} />
-      <button onClick={() => setSampleVal((val) => (val + 1) % 14)}>Sample</button>
+      {/* <div className={styles.sampleStyle} style={{ backgroundPosition: `${sampleVal * -30}px` }} />
+      <button onClick={() => setSampleVal((val) => (val + 1) % 14)}>Sample</button> */}
 
       <div className={styles.minesweeper}>
         <div className={styles.header}>
@@ -126,7 +95,7 @@ const Home = () => {
                 key={`${x}-${y}`}
                 className={styles.cell}
                 onClick={() => clickHandler(x, y)}
-                style={{ backgroundColor: cell === 1 ? '#000000' : '#ccc' }} // クリックされたら色を変更
+                style={{ backgroundColor: cell === 1 ? '#00ff1a' : '#ccc' }} // クリックされたら色を変更
               />
             )),
           )}
