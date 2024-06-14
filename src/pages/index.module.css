@@ -79,7 +79,7 @@
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   gap: 1px;
-  width: 260px; /* 270pxから変更 */
+  width: 260px;
   margin-top: 10px;
   background-color: #999;
 }
@@ -88,8 +88,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px; /* 30pxから変更 */
-  height: 28px; /* 30pxから変更 */
+  width: 28px;
+  height: 28px;
+  cursor: pointer; /* クリック可能にする */
   background-color: #ccc;
   border: 2px outset #fff;
 }
