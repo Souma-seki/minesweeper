@@ -15,32 +15,52 @@
 }
 
 .body {
-  width: 300px;
-  height: 300px;
-  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 270px;
+  background: #fff;
 }
 
 .minesweeper {
-  width: 300px;
-  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 270px;
   background-color: #c82121;
 }
 
 .header {
-  width: 300px;
-  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 270px;
+  height: 60px;
+  padding: 0 5px;
   background-color: #143dd2;
 }
 
 .counter {
-  width: 40px;
-  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 24px;
+  color: white;
   background-color: #ff00d0;
 }
 
 .timer {
-  width: 40px;
-  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 24px;
+  color: white;
   background-color: #ff00d0;
 }
 
@@ -48,8 +68,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   background-color: yellow;
   border: 2px outset #fff;
   border-radius: 50%;
@@ -59,6 +79,8 @@
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   gap: 1px;
+  width: 260px; /* 270pxから変更 */
+  margin-top: 10px;
   background-color: #999;
 }
 
@@ -66,22 +88,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 28px; /* 30pxから変更 */
+  height: 28px; /* 30pxから変更 */
   background-color: #ccc;
   border: 2px outset #fff;
 }
-
-/* .syokyuu {
-  width: 30px;
-  height: 30px; */
-
-/* .tyuukyuu
-.joukyuu
-.kasutamu
-.haikei
-.masume
-.bakudannsuu
-.taimaaaaa
-.risettobotann
-. */

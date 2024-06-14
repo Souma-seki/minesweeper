@@ -2,6 +2,30 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
+  const [bombMap, setbombMap] = useState([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 3, 0, 0, 0, 0],
+    [0, 0, 0, 1, 2, 3, 0, 0, 0],
+    [0, 0, 3, 2, 1, 0, 0, 0, 0],
+    [0, 0, 0, 3, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+  const [userInputs, setuserInputs] = useState([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 3, 0, 0, 0, 0],
+    [0, 0, 0, 1, 2, 3, 0, 0, 0],
+    [0, 0, 3, 2, 1, 0, 0, 0, 0],
+    [0, 0, 0, 3, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+  const board = structuredClone(bombMap);
+  // for(y){//再起関数って何
+  //   for(x)
+  // }
   const [sampleVal, setsampleVal] = useState(0);
   console.log(sampleVal);
   return (
@@ -14,89 +38,11 @@ const Home = () => {
           <div className={styles.counter}>10</div>
           <div className={styles.face}>😊</div>
           <div className={styles.timer}>000</div>
-          <div className={styles.grid}>
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-            <div className={styles.cell} />
-          </div>
+        </div>
+        <div className={styles.grid}>
+          {Array.from({ length: 81 }, (_, index) => (
+            <div className={styles.cell} key={index} />
+          ))}
         </div>
       </div>
     </div>
@@ -116,4 +62,3 @@ export default Home;
 //初級、中級、上級、カスタム
 // 左クリック→解放右クリック→旗
 // 爆弾を踏んだ時に爆弾の場所を教えてくれるように
-//
