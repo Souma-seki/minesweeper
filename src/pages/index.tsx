@@ -77,6 +77,7 @@ const Home = () => {
   const [bombMap, setBombMap] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -94,6 +95,7 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
   const [sampleVal, setSampleVal] = useState(0);
@@ -101,6 +103,7 @@ const Home = () => {
   const clickHandler = (x, y) => {
     const newUserInputs = structuredClone(userInputs);
     newUserInputs[y][x] = 1; // 仮に1をクリックされた印として使用
+    console.log(x, y);
 
     setUserInputs(newUserInputs);
   };
@@ -113,7 +116,7 @@ const Home = () => {
       <div className={styles.minesweeper}>
         <div className={styles.header}>
           <div className={styles.counter}>10</div>
-          <div className={styles.face}>😊</div>
+          <div className={styles.sampleStyle} style={{ backgroundPosition: `-330px` }} />
           <div className={styles.timer}>000</div>
         </div>
         <div className={styles.grid}>
@@ -123,7 +126,7 @@ const Home = () => {
                 key={`${x}-${y}`}
                 className={styles.cell}
                 onClick={() => clickHandler(x, y)}
-                style={{ backgroundColor: cell === 1 ? '#888' : '#ccc' }} // クリックされたら色を変更
+                style={{ backgroundColor: cell === 1 ? '#000000' : '#ccc' }} // クリックされたら色を変更
               />
             )),
           )}
