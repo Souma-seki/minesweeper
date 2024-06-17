@@ -28,7 +28,7 @@ const Home = () => {
     if (isFirst()) {
       const setUpBombMap = () => {
         newBombMap[y][x] = 1;
-        while (newBombMap.flat().filter((cell) => cell === 1).length < 10 + 1) {
+        while (newBombMap.flat().filter((cell) => cell === 1).length < 11) {
           const nx = Math.floor(Math.random() * 9);
           const ny = Math.floor(Math.random() * 9);
           newBombMap[ny][nx] = 1;
@@ -45,19 +45,19 @@ const Home = () => {
     }
   };
 
-  // //右クリックしたときに呼ぶ関数
-  // const clickR = (x: number, y: number) => {
-  //   document.getElementsByTagName('html')[0].oncontextmenu = () => false;
+  //右クリックしたときに呼ぶ関数
+  const clickR = (x: number, y: number) => {
+    document.getElementsByTagName('html')[0].oncontextmenu = () => false;
 
-  //   const userInput = userInputs[y][x];
-  //   if (userInput === 1) return;
+    const userInput = userInputs[y][x];
+    if (userInput === 1) return;
 
-  //   //0,2,3を0,1,2,にして2,3,4にして2,3,0にする
-  //   const newUserInput = (Math.max(0, userInput - 1) + 2) % 4;
-  //   newUserInputs[y][x] = newUserInput;
-  //   //書き換えたuserInputsをセット
-  //   setUserInputs(newUserInputs);
-  // };
+    //0,2,3を0,1,2,にして2,3,4にして2,3,0にする
+    const newUserInput = (Math.max(0, userInput - 1) + 2) % 4;
+    newUserInputs[y][x] = newUserInput;
+    //書き換えたuserInputsをセット
+    setUserInputs(newUserInputs);
+  };
 
   const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
   const isFailure = userInputs.some((row, y) =>
@@ -103,7 +103,6 @@ const Home = () => {
           )}
         </div>
       </div>
-      <div className={styles.sampleStyle} style={{ backgroundPosition: `-300px` }} />
     </div>
   );
 };
