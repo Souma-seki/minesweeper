@@ -62,7 +62,7 @@ const Home = () => {
       setBombMap(newBombMap);
     }
     const userInput = userInputs[y][x];
-    if (userInput === 0) {
+    if (userInput === 0 || userInput === 2) {
       newUserInputs[y][x] = 1;
       const bombCount = bombCounts(x, y);
       if (bombCount === 0) {
@@ -74,23 +74,14 @@ const Home = () => {
 
   //空白連鎖
   const blank = (x: number, y: number) => {
-    let count = 0;
-    for (const direction of directions) {
-      const [dx, dy] = direction;
-      const X = x + dx;
-      const Y = y + dy;
-      if (X >= 0 && X < 9 && Y >= 0 && Y < 9 && bombMap[Y][X] === 1) {
-        count++;
-      }
-    }
-    for (const direction of directions) {
-      const [fx, fy] = direction;
-      const X2 = x + fx;
-      const Y2 = y + fy;
-      if (X2 >= 0 && X2 < 9 && Y2 >= 0 && Y2 < 9 && newUserInputs[Y2][X2] === 0 && count === 0) {
-        newUserInputs[Y2][X2] = 1;
-        const bombCount = bombCounts(X2, Y2);
-        if (bombCount === 0) {
+    const bombCount = bombCounts(x, y);
+    if (bombCount === 0) {
+      for (const direction of directions) {
+        const [fx, fy] = direction;
+        const X2 = x + fx;
+        const Y2 = y + fy;
+        if (X2 >= 0 && X2 < 9 && Y2 >= 0 && Y2 < 9 && newUserInputs[Y2][X2] === 0) {
+          newUserInputs[Y2][X2] = 1;
           blank(X2, Y2);
         }
       }
@@ -121,11 +112,9 @@ const Home = () => {
     const userInput = userInputs[y][x];
     if (userInput === 1) return;
 
-    const newUserInput = (Math.max(0, userInput - 1) + 2) % 4;
-    newUserInputs[y][x] = newUserInput;
-    setUserInputs(newUserInputs);
+    newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
+    setUserInputs([...newUserInputs]);
   };
-
   // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
   // const isFailure = userInputs.some((row, y) =>
   //   row.some((input, x) => input === 1 && bombMap[y][x] === 1),
