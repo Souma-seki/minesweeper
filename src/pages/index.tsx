@@ -10,126 +10,6 @@
 // // // // 左クリック→解放右クリック→旗
 // // // // 爆弾を踏んだ時に爆弾の場所を教えてくれるように
 
-// import { useState } from 'react';
-// import styles from './index.module.css';
-
-// const Home = () => {
-//   const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
-//   const [userInputs, setUserInputs] = useState(zeroBoard);
-//   const [bombMap, setBombMap] = useState(zeroBoard);
-//   const newBombMap = structuredClone(bombMap);
-//   const newUserInputs = structuredClone(userInputs);
-
-//   //初回
-//   const First = () => !bombMap.flat().includes(1);
-
-//   //左クリック(マスを開く)
-//   const clickL = (x: number, y: number) => {
-//     const [bombMap, setbombMap] = useState([
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 3, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//     ]);
-//     const [userInputs, setuserInputs] = useState([
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 3, 0, 0, 0, 0],
-//       [0, 0, 0, 1, 2, 3, 0, 0, 0],
-//       [0, 0, 3, 2, 1, 0, 0, 0, 0],
-//       [0, 0, 0, 3, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//     ]);
-
-//     if (First()) {
-//       const setUpBombMap = () => {
-//         newBombMap[y][x] = 1;
-//         while (newBombMap.flat().filter((cell) => cell === 1).length < 11) {
-//           const nx = Math.floor(Math.random() * 9);
-//           const ny = Math.floor(Math.random() * 9);
-//           newBombMap[ny][nx] = 1;
-//         }
-//         newBombMap[y][x] = 0;
-//       };
-//       setUpBombMap();
-//       setBombMap(newBombMap);
-//     }
-//     const userInput = userInputs[y][x];
-//     if (userInput === 0) {
-//       newUserInputs[y][x] = 1;
-//       setUserInputs(newUserInputs);
-//     }
-//   };
-
-//   //右クリック（旗を置く）
-//   const clickR = (x: number, y: number) => {
-//     document.getElementsByTagName('html')[0].oncontextmenu = () => false;
-
-//     const userInput = userInputs[y][x];
-//     if (userInput === 1) return;
-
-//     //0,2,3を0,1,2,にして2,3,4にして2,3,0にする
-//     const newUserInput = (Math.max(0, userInput - 1) + 2) % 4;
-//     newUserInputs[y][x] = newUserInput;
-//     //書き換えたuserInputsをセット
-//     setUserInputs(newUserInputs);
-//   };
-
-//   const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
-//   const isFailure = userInputs.some((row, y) =>
-//     row.some((input, x) => input === 1 && bombMap[y][x] === 1),
-//   );
-
-//   const renderBomb = (x: number, y: number) => {
-//     return bombMap[y][x] === 1 ? (
-//       <div
-//         className={styles.sampleStyle}
-//         style={{
-//           backgroundPosition: '-360px',
-//         }}
-//       />
-//     ) : (
-//       <div className={styles.cell} />
-//     );
-//   };
-
-//   return (
-//     <div className={styles.container}>
-//       <div className={styles.minesweeper}>
-//         <div className={styles.header}>
-//           <div className={styles.counter}>10</div>
-//           <div className={styles.sampleStyle} style={{ backgroundPosition: `-330px` }} />
-//           <div className={styles.timer}>000</div>
-//         </div>
-//         <div className={styles.grid}>
-//           {userInputs.map((row, y) =>
-//             row.map((cell, x) => (
-//               <div
-//                 key={`${x}-${y}`}
-//                 className={styles.cell}
-//                 onClick={() => clickL(x, y)}
-//                 style={{
-//                   backgroundColor: cell === 1 ? '#919191' : '#c6c6c6',
-//                   ...(cell === 2 && { backgroundPosition: `-330px` }),
-//                 }}
-//               >
-//                 {bombMap[y][x] === 1 && cell === 1 ? renderBomb(x, y) : null}
-//               </div>
-//             )),
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Home;
-
 import { useState } from 'react';
 import styles from './index.module.css';
 
@@ -200,7 +80,7 @@ const Home = () => {
       const Y2 = y + fy;
       if (X2 >= 0 && X2 < 9 && Y2 >= 0 && Y2 < 9 && newUserInputs[Y2][X2] === 0) {
         newUserInputs[Y2][X2] = 1;
-        const bombCount = bombCounts(fx, fy);
+        const bombCount = bombCounts(X2, Y2);
         if (bombCount === 0) {
           blank(X2, Y2);
         }
@@ -263,7 +143,7 @@ const Home = () => {
       <div className={styles.minesweeper}>
         <div className={styles.header}>
           <div className={styles.counter}>10</div>
-          <div className={styles.sampleStyle} style={{ backgroundPosition: `-330px` }} />
+          <div className={styles.sampleStyle} style={{ backgroundPosition: `-390px` }} />
           <div className={styles.timer}>000</div>
         </div>
         <div className={styles.grid}>
