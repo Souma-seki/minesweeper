@@ -152,7 +152,7 @@ const Home = () => {
     [-1, 1], // 左下
     [-1, -1], // 左上
   ];
-
+  //爆弾の数を数える
   const bombCounts = (x: number, y: number) => {
     let count = 0;
     for (const direction of directions) {
@@ -184,10 +184,31 @@ const Home = () => {
     const userInput = userInputs[y][x];
     if (userInput === 0) {
       newUserInputs[y][x] = 1;
+      const bombCount = bombCounts(x, y);
+      if (bombCount === 0) {
+        blank(x, y);
+      }
       setUserInputs(newUserInputs);
     }
   };
 
+  //空白連鎖
+  const blank = (x: number, y: number) => {
+    for (const direction of directions) {
+      const [fx, fy] = direction;
+      const X2 = x + fx;
+      const Y2 = y + fy;
+      if (X2 >= 0 && X2 < 9 && Y2 >= 0 && Y2 < 9 && newUserInputs[Y2][X2] === 0) {
+        newUserInputs[Y2][X2] = 1;
+        const bombCount = bombCounts(fx, fy);
+        if (bombCount === 0) {
+          blank(X2, Y2);
+        }
+      }
+    }
+  };
+
+  //周囲の爆弾の数表示
   const cellNumber = (x: number, y: number) => {
     const userInput = userInputs[y][x];
     if (userInput === 1) {
@@ -223,6 +244,7 @@ const Home = () => {
   //   row.some((input, x) => input === 1 && bombMap[y][x] === 1),
   // );
 
+  //爆弾設置
   const renderBomb = (x: number, y: number) => {
     return bombMap[y][x] === 1 ? (
       <div
