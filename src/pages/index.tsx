@@ -74,11 +74,20 @@ const Home = () => {
 
   //空白連鎖
   const blank = (x: number, y: number) => {
+    let count = 0;
+    for (const direction of directions) {
+      const [dx, dy] = direction;
+      const X = x + dx;
+      const Y = y + dy;
+      if (X >= 0 && X < 9 && Y >= 0 && Y < 9 && bombMap[Y][X] === 1) {
+        count++;
+      }
+    }
     for (const direction of directions) {
       const [fx, fy] = direction;
       const X2 = x + fx;
       const Y2 = y + fy;
-      if (X2 >= 0 && X2 < 9 && Y2 >= 0 && Y2 < 9 && newUserInputs[Y2][X2] === 0) {
+      if (X2 >= 0 && X2 < 9 && Y2 >= 0 && Y2 < 9 && newUserInputs[Y2][X2] === 0 && count === 0) {
         newUserInputs[Y2][X2] = 1;
         const bombCount = bombCounts(X2, Y2);
         if (bombCount === 0) {
@@ -107,17 +116,15 @@ const Home = () => {
     return null;
   };
 
-  // //右クリック（旗を置く）
-  // const clickR = (x: number, y: number) => {
-  //   document.getElementsByTagName('html')[0].oncontextmenu = () => false;
+  //右クリック（旗を置く）
+  const clickR = (x: number, y: number) => {
+    const userInput = userInputs[y][x];
+    if (userInput === 1) return;
 
-  //   const userInput = userInputs[y][x];
-  //   if (userInput === 1) return;
-
-  //   const newUserInput = (Math.max(0, userInput - 1) + 2) % 4;
-  //   newUserInputs[y][x] = newUserInput;
-  //   setUserInputs(newUserInputs);
-  // };
+    const newUserInput = (Math.max(0, userInput - 1) + 2) % 4;
+    newUserInputs[y][x] = newUserInput;
+    setUserInputs(newUserInputs);
+  };
 
   // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
   // const isFailure = userInputs.some((row, y) =>
@@ -153,14 +160,27 @@ const Home = () => {
                 key={`${x}-${y}`}
                 className={styles.cell}
                 onClick={() => clickL(x, y)}
-                // onContextMenu={() => clickR(x, y)}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  clickR(x, y);
+                }}
                 style={{
                   backgroundColor: cell === 1 ? '#919191' : '#c6c6c6',
-                  ...(cell === 2 && { backgroundPosition: `-330px` }),
                 }}
               >
-                {cellNumber(x, y)}
-                {bombMap[y][x] === 1 && cell === 1 ? renderBomb(x, y) : null}
+                {cell === 2 ? (
+                  <div
+                    className={styles.sampleStyle}
+                    style={{
+                      backgroundPosition: '-270px',
+                    }}
+                  />
+                ) : (
+                  <>
+                    {cellNumber(x, y)}
+                    {bombMap[y][x] === 1 && cell === 1 ? renderBomb(x, y) : null}
+                  </>
+                )}
               </div>
             )),
           )}
