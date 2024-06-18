@@ -1,4 +1,4 @@
-.container {
+/* .container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,7 +27,7 @@
   flex-direction: column;
   align-items: center;
   width: 270px;
-  background-color: #070505;
+  background-color: #c82121;
 }
 
 .header {
@@ -64,6 +64,8 @@
   background-color: #ff00d0;
 }
 
+
+
 .grid {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
@@ -80,6 +82,94 @@
   width: 28px;
   height: 28px;
   cursor: pointer; /* クリック可能にする */
-  background-color: #ccc;
+/* background-color: #ccc;
   border: 2px outset #fff;
+} */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  min-height: 100vh;
+  padding: 0 0.5rem;
+}
+
+.sampleStyle {
+  width: 30px;
+  height: 30px;
+  background: url('../assets/images/icons.png') no-repeat;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 270px;
+  background: #c6c6c6; /* 背景色を変更 */
+}
+
+.minesweeper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background-color: #c6c6c6;
+  padding: 12px;
+  border-top: 4px solid #fff;
+  border-left: 4px solid #fff;
+  border-right: 4px solid #868686;
+  border-bottom: 4px solid #868686;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); /* 影を追加 */
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 270px; /* サイズを調整 */
+  height: 52px; /* サイズを調整 */
+  margin-bottom: 10px; /* 下に余白を追加 */
+  background-color: #c6c6c6; /* 背景色を変更 */
+  border-bottom: 2px solid #808080; /* 下枠の色を追加 */
+}
+
+.counter,
+.timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px; /* サイズを調整 */
+  height: 30px; /* サイズを調整 */
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 24px;
+  color: red;
+  background-color: black;
+  border: 2px inset #808080;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 1px;
+  width: 270px; /* サイズを調整 */
+  background-color: #c6c6c6; /* 背景色を変更 */
+  border-top: 4px solid #fff;
+  border-left: 4px solid #fff;
+  border-right: 4px solid #868686;
+  border-bottom: 4px solid #868686;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background-color: #c0c0c0; /* 背景色を変更 */
+  border: 2px outset #fff;
+  box-shadow:
+    inset 1px 1px 2px #fff,
+    inset -1px -1px 2px #868686;
 }
