@@ -140,11 +140,35 @@ const Home = () => {
   const newBombMap = structuredClone(bombMap);
   const newUserInputs = structuredClone(userInputs);
 
-  const isFirst = () => !bombMap.flat().includes(1);
+  const First = () => !bombMap.flat().includes(1);
+
+  const directions = [
+    [0, 1], // 下
+    [0, -1], // 上
+    [1, 1], // 右下
+    [1, -1], // 右上
+    [1, 0], // 右
+    [-1, 0], // 左
+    [-1, 1], // 左下
+    [-1, -1], // 左上
+  ];
+
+  const bombCounts = (x: number, y: number) => {
+    let count = 0;
+    for (const direction of directions) {
+      const [dx, dy] = direction;
+      const X = x + dx;
+      const Y = y + dy;
+      if (X >= 0 && X < 9 && Y >= 0 && Y < 9 && bombMap[Y][X] === 1) {
+        count++;
+      }
+    }
+    return count;
+  };
 
   //左クリック(マスを開く)
-  const clickL = (x, y) => {
-    if (isFirst()) {
+  const clickL = (x: number, y: number) => {
+    if (First()) {
       const setUpBombMap = () => {
         newBombMap[y][x] = 1;
         while (newBombMap.flat().filter((cell) => cell === 1).length < 11) {
@@ -164,24 +188,42 @@ const Home = () => {
     }
   };
 
-  //右クリック（旗を置く）
-  const clickR = (x, y) => {
-    document.getElementsByTagName('html')[0].oncontextmenu = () => false;
-
+  const cellNumber = (x: number, y: number) => {
     const userInput = userInputs[y][x];
-    if (userInput === 1) return;
-
-    const newUserInput = (Math.max(0, userInput - 1) + 2) % 4;
-    newUserInputs[y][x] = newUserInput;
-    setUserInputs(newUserInputs);
+    if (userInput === 1) {
+      const bombCount = bombCounts(x, y);
+      if (bombMap[y][x] !== 1 && bombCount > 0) {
+        return (
+          <div
+            className={styles.sampleStyle}
+            style={{
+              backgroundPosition: `${-30 * (bombCount - 1)}px`,
+            }}
+          />
+        );
+      }
+    }
+    return null;
   };
 
-  const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
-  const isFailure = userInputs.some((row, y) =>
-    row.some((input, x) => input === 1 && bombMap[y][x] === 1),
-  );
+  // //右クリック（旗を置く）
+  // const clickR = (x: number, y: number) => {
+  //   document.getElementsByTagName('html')[0].oncontextmenu = () => false;
 
-  const renderBomb = (x, y) => {
+  //   const userInput = userInputs[y][x];
+  //   if (userInput === 1) return;
+
+  //   const newUserInput = (Math.max(0, userInput - 1) + 2) % 4;
+  //   newUserInputs[y][x] = newUserInput;
+  //   setUserInputs(newUserInputs);
+  // };
+
+  // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
+  // const isFailure = userInputs.some((row, y) =>
+  //   row.some((input, x) => input === 1 && bombMap[y][x] === 1),
+  // );
+
+  const renderBomb = (x: number, y: number) => {
     return bombMap[y][x] === 1 ? (
       <div
         className={styles.sampleStyle}
@@ -209,12 +251,13 @@ const Home = () => {
                 key={`${x}-${y}`}
                 className={styles.cell}
                 onClick={() => clickL(x, y)}
-                onContextMenu={() => clickR(x, y)}
+                // onContextMenu={() => clickR(x, y)}
                 style={{
                   backgroundColor: cell === 1 ? '#919191' : '#c6c6c6',
                   ...(cell === 2 && { backgroundPosition: `-330px` }),
                 }}
               >
+                {cellNumber(x, y)}
                 {bombMap[y][x] === 1 && cell === 1 ? renderBomb(x, y) : null}
               </div>
             )),
