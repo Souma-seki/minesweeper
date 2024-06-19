@@ -48,6 +48,9 @@ const Home = () => {
 
   //左クリック(マスを開く)
   const clickL = (x: number, y: number) => {
+    const flag = userInputs[y][x];
+    if (flag === 2) return;
+
     if (First()) {
       const setUpBombMap = () => {
         newBombMap[y][x] = 1;
@@ -62,7 +65,7 @@ const Home = () => {
       setBombMap(newBombMap);
     }
     const userInput = userInputs[y][x];
-    if (userInput === 0 || userInput === 2) {
+    if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
       newUserInputs[y][x] = 1;
       const bombCount = bombCounts(x, y);
       if (bombCount === 0) {
@@ -113,7 +116,7 @@ const Home = () => {
     if (userInput === 1) return;
 
     newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
-    setUserInputs([...newUserInputs]);
+    setUserInputs(newUserInputs);
   };
   // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
   // const isFailure = userInputs.some((row, y) =>
@@ -134,6 +137,15 @@ const Home = () => {
     );
   };
 
+  // //ゲームオーバー
+  // const openBombs = () => {
+  //   //ゲームオーバーの時爆弾の場所を開く
+  // };
+  // const Gameover = () => {
+  //   const userInput = userInputs[y][x];
+  //   if (userInput === 1 && bombMap[x][y] === 1) {
+  //   }
+  // };
   return (
     <div className={styles.container}>
       <div className={styles.minesweeper}>
