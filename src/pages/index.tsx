@@ -10,16 +10,22 @@
 // // // // 左クリック→解放右クリック→旗
 // // // // 爆弾を踏んだ時に爆弾の場所を教えてくれるように
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
   const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
+  //userInputs=0,未クリック userInputs=1,クリック
   const [userInputs, setUserInputs] = useState(zeroBoard);
+  //bombMap=0,爆弾なし bombMap=1,爆弾
   const [bombMap, setBombMap] = useState(zeroBoard);
+  //初回クリック後のマップ
   const newBombMap = structuredClone(bombMap);
+  //newUserInputs=0,開いてないマスnewUserInputs=1,開いたマスnewUserInputs=2,旗
   const newUserInputs = structuredClone(userInputs);
+  const [gameOver, setGameOver] = useState(false);
 
+  //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
 
   const directions = [
@@ -49,6 +55,7 @@ const Home = () => {
   //左クリック(マスを開く)
   const clickL = (x: number, y: number) => {
     const flag = userInputs[y][x];
+    if (gameOver) return;
     if (flag === 2) return;
 
     if (First()) {
@@ -67,6 +74,14 @@ const Home = () => {
     const userInput = userInputs[y][x];
     if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
       newUserInputs[y][x] = 1;
+
+      if (bombMap[y][x] === 1) {
+        alert('GameOver');
+        setGameOver(true);
+        openBombs();
+        return;
+      }
+
       const bombCount = bombCounts(x, y);
       if (bombCount === 0) {
         blank(x, y);
@@ -114,7 +129,6 @@ const Home = () => {
   const clickR = (x: number, y: number) => {
     const userInput = userInputs[y][x];
     if (userInput === 1) return;
-
     newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
     setUserInputs(newUserInputs);
   };
@@ -137,9 +151,19 @@ const Home = () => {
     );
   };
 
-  // //ゲームオーバー
+  //ゲームオーバー
   // const openBombs = () => {
   //   //ゲームオーバーの時爆弾の場所を開く
+
+  //   if (userInputs[y][x] === 1 && bombMap[y][x] === 1) {
+  //     for (let y = 0; y < bombMap.length; y++) {
+  //       if(bombMap[y][x]===1){
+  //         return clickL;
+  //       }
+
+  //     alert('GameOver');
+  //     return openBombs();
+  //   }
   // };
   // const Gameover = () => {
   //   const userInput = userInputs[y][x];
