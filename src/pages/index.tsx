@@ -10,7 +10,7 @@
 // // // // 左クリック→解放右クリック→旗
 // // // // 爆弾を踏んだ時に爆弾の場所を教えてくれるように
 
-import { use, useState } from 'react';
+import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
@@ -151,25 +151,18 @@ const Home = () => {
     );
   };
 
-  //ゲームオーバー
-  // const openBombs = () => {
-  //   //ゲームオーバーの時爆弾の場所を開く
+  //爆弾召喚
+  const openBombs = () => {
+    for (let y = 0; y < bombMap.length; y++) {
+      for (let x = 0; x < bombMap[y].length; x++) {
+        if (bombMap[y][x] === 1) {
+          newUserInputs[y][x] = 1;
+        }
+      }
+    }
+    setUserInputs(newUserInputs);
+  };
 
-  //   if (userInputs[y][x] === 1 && bombMap[y][x] === 1) {
-  //     for (let y = 0; y < bombMap.length; y++) {
-  //       if(bombMap[y][x]===1){
-  //         return clickL;
-  //       }
-
-  //     alert('GameOver');
-  //     return openBombs();
-  //   }
-  // };
-  // const Gameover = () => {
-  //   const userInput = userInputs[y][x];
-  //   if (userInput === 1 && bombMap[x][y] === 1) {
-  //   }
-  // };
   return (
     <div className={styles.container}>
       <div className={styles.minesweeper}>
