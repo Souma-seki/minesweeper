@@ -93,15 +93,21 @@ const Home = () => {
   //空白連鎖
   const blank = (x: number, y: number) => {
     const bombCount = bombCounts(x, y);
-    if (bombCount === 0) {
-      for (const direction of directions) {
-        const [fx, fy] = direction;
-        const X2 = x + fx;
-        const Y2 = y + fy;
-        if (X2 >= 0 && X2 < 9 && Y2 >= 0 && Y2 < 9 && newUserInputs[Y2][X2] === 0) {
-          newUserInputs[Y2][X2] = 1;
-          blank(X2, Y2);
-        }
+
+    for (const direction of directions) {
+      const [fx, fy] = direction;
+      const X2 = x + fx;
+      const Y2 = y + fy;
+      if (
+        X2 >= 0 &&
+        X2 < 9 &&
+        Y2 >= 0 &&
+        Y2 < 9 &&
+        newUserInputs[Y2][X2] === 0 &&
+        bombCount === 0
+      ) {
+        newUserInputs[Y2][X2] = 1;
+        blank(X2, Y2);
       }
     }
   };
@@ -168,7 +174,14 @@ const Home = () => {
       <div className={styles.minesweeper}>
         <div className={styles.header}>
           <div className={styles.counter}>10</div>
-          <div className={styles.sampleStyle} style={{ backgroundPosition: `-390px` }} />
+          <button
+            className={styles.sampleStyle}
+            style={{ backgroundPosition: '-390px' }}
+            onClick={() => {
+              setUserInputs(zeroBoard);
+              setBombMap(zeroBoard);
+            }}
+          />
           <div className={styles.timer}>000</div>
         </div>
         <div className={styles.grid}>
