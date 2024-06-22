@@ -8,7 +8,7 @@ const Home = () => {
   //9旗
   //10爆弾
   //11クリックした爆弾
-  const board = [
+  const [board, setBoard] = useState([
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -18,8 +18,8 @@ const Home = () => {
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  ];
-
+  ]);
+  const nboard = structuredClone(board);
   const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
   //userInputs=0,未クリック userInputs=1,クリック
   const [userInputs, setUserInputs] = useState(zeroBoard);
@@ -63,7 +63,7 @@ const Home = () => {
     for (let y = 0; y < bombMap.length; y++) {
       for (let x = 0; x < bombMap[y].length; x++) {
         if (bombMap[y][x] === 1) {
-          board[y][x] = 11;
+          nboard[y][x] = 11;
           for (let y = 0; y < bombMap.length; y++) {
             for (let x = 0; x < bombMap[y].length; x++) {
               if (bombMap[y][x] === 1) {
@@ -89,12 +89,13 @@ const Home = () => {
       }
     }
     board[y][x] = count;
+    newUserInputs[y][x] = 1;
     if (count === 0) {
       for (const direction of directions) {
         const [dx, dy] = direction;
         const nx = x + dx;
         const ny = y + dy;
-        if (board[ny] !== undefined && board[ny][nx] !== undefined && board[ny][nx] === -1) {
+        if (board[ny] !== undefined && board[ny][nx] !== undefined && newUserInputs[ny][nx] === 0) {
           blank(nx, ny);
         }
       }
@@ -135,7 +136,7 @@ const Home = () => {
       if (bombCount === 0) {
         blank(x, y);
       } else {
-        board[y][x] = bombCount;
+        nboard[y][x] = bombCount;
       }
       for (let y = 0; y < bombMap.length; y++) {
         for (let x = 0; x < bombMap[y].length; x++) {
@@ -174,7 +175,7 @@ const Home = () => {
     if (userInput === 1) return;
     newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
     setUserInputs(newUserInputs);
-    board[y][x] = newUserInputs[y][x] === 2 ? 9 : -1;
+    nboard[y][x] = newUserInputs[y][x] === 2 ? 9 : -1;
     for (let y = 0; y < bombMap.length; y++) {
       for (let x = 0; x < bombMap[y].length; x++) {
         if (newUserInputs[y][x] === 2) board[y][x] = 9;
@@ -222,7 +223,7 @@ const Home = () => {
           <div className={styles.timer}>000</div>
         </div>
         <div className={styles.grid}>
-          {board.map((row, y) =>
+          {nboard.map((row, y) =>
             row.map((cell, x) => (
               <div
                 key={`${x}-${y}`}
