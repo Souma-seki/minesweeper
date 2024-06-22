@@ -21,12 +21,16 @@ const Home = () => {
   ]);
   const nboard = structuredClone(board);
   const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
+
   //userInputs=0,未クリック userInputs=1,クリック
   const [userInputs, setUserInputs] = useState(zeroBoard);
+
   //bombMap=0,爆弾なし bombMap=1,爆弾
   const [bombMap, setBombMap] = useState(zeroBoard);
+
   //初回クリック後のマップ
   const newBombMap = structuredClone(bombMap);
+
   //newUserInputs=0,開いてないマスnewUserInputs=1,開いたマスnewUserInputs=2,旗
   const newUserInputs = structuredClone(userInputs);
   const [gameOver, setGameOver] = useState(false);
@@ -44,6 +48,7 @@ const Home = () => {
     [-1, 1], // 左下
     [-1, -1], // 左上
   ];
+
   //爆弾の数を数える
   const bombCounts = (x: number, y: number) => {
     let count = 0;
@@ -76,6 +81,7 @@ const Home = () => {
     }
   };
 
+  //空白連鎖
   const blank = (x: number, y: number) => {
     let count = 0;
     for (const direction of directions) {
@@ -107,7 +113,6 @@ const Home = () => {
     const flag = userInputs[y][x];
     if (gameOver) return;
     if (flag === 2) return;
-
     if (First()) {
       const setUpBombMap = () => {
         newBombMap[y][x] = 1;
@@ -124,14 +129,22 @@ const Home = () => {
     const userInput = userInputs[y][x];
     if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
       newUserInputs[y][x] = 1;
-
       if (bombMap[y][x] === 1) {
         alert('GameOver');
         setGameOver(true);
         openBombs();
         return;
       }
-
+      let noBomb = 0;
+      for (let y = 0; y < bombMap.length; y++) {
+        for (let x = 0; x < bombMap[y].length; x++)
+          if (board[y][x] !== 10 && board[y][x] !== -1) {
+            noBomb++;
+          }
+        if (noBomb === 71) {
+          alert('GameClear');
+        }
+      }
       const bombCount = bombCounts(x, y);
       if (bombCount === 0) {
         blank(x, y);
@@ -145,7 +158,6 @@ const Home = () => {
           }
         }
       }
-
       setUserInputs(newUserInputs);
     }
   };
@@ -234,7 +246,7 @@ const Home = () => {
                   clickR(x, y);
                 }}
                 style={{
-                  backgroundColor: cell !== -1 ? '#919191' : '#c6c6c6',
+                  backgroundColor: cell !== -1 && cell !== 9 ? '#919191' : '#c6c6c6',
                 }}
               >
                 {cell === 9 ? (
