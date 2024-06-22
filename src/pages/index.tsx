@@ -77,28 +77,29 @@ const Home = () => {
     setnewBoard(newboard);
   };
 
-  //空白連鎖
-  const blank = (x: number, y: number) => {
-    const bombCount = bombCounts(x, y);
-    nboard[y][x] = bombCount;
-
-    for (const direction of directions) {
-      const [fx, fy] = direction;
-      const X2 = x + fx;
-      const Y2 = y + fy;
-      if (
-        X2 >= 0 &&
-        X2 < 9 &&
-        Y2 >= 0 &&
-        Y2 < 9 &&
-        newUserInputs[Y2][X2] === 0 &&
-        bombCount === 0
-      ) {
-        newUserInputs[Y2][X2] = 1;
-        blank(X2, Y2);
+  function blank(x: number, y: number) {
+    let count = 0;
+    for (const [dx, dy] of directions) {
+      const nx = x + dx;
+      const ny = y + dy;
+      if (board[ny] !== undefined && board[ny][nx] !== undefined) {
+        if (newBombMap[ny][nx] === 1) {
+          count++;
+        }
       }
     }
-  };
+    board[y][x] = count;
+    if (count === 0) {
+      // このマスの周りに爆弾がない場合
+      for (const [dx, dy] of directions) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (board[ny] !== undefined && board[ny][nx] !== undefined && board[ny][nx] === -1) {
+          blank(nx, ny); // 隣接するマスも再帰的にチェック
+        }
+      }
+    }
+  }
 
   //左クリック(マスを開く)
   const clickL = (x: number, y: number) => {
