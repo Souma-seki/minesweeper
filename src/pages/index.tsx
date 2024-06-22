@@ -63,7 +63,14 @@ const Home = () => {
     for (let y = 0; y < bombMap.length; y++) {
       for (let x = 0; x < bombMap[y].length; x++) {
         if (bombMap[y][x] === 1) {
-          board[y][x] = 11;
+          nboard[y][x] = 11;
+          for (let y = 0; y < bombMap.length; y++) {
+            for (let x = 0; x < bombMap[y].length; x++) {
+              if (bombMap[y][x] === 1) {
+                board[y][x] = 11;
+              }
+            }
+          }
         }
       }
     }
