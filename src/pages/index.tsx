@@ -8,7 +8,7 @@ const Home = () => {
   //9旗
   //10爆弾
   //11クリックした爆弾
-  const [board, setBoard] = useState([
+  const board = [
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -18,8 +18,8 @@ const Home = () => {
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  ]);
-  const nboard = structuredClone(board);
+  ];
+
   const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
   //userInputs=0,未クリック userInputs=1,クリック
   const [userInputs, setUserInputs] = useState(zeroBoard);
@@ -30,7 +30,7 @@ const Home = () => {
   //newUserInputs=0,開いてないマスnewUserInputs=1,開いたマスnewUserInputs=2,旗
   const newUserInputs = structuredClone(userInputs);
   const [gameOver, setGameOver] = useState(false);
-  const [newboard, setnewBoard] = useState(board);
+
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
 
@@ -63,23 +63,23 @@ const Home = () => {
     for (let y = 0; y < bombMap.length; y++) {
       for (let x = 0; x < bombMap[y].length; x++) {
         if (bombMap[y][x] === 1) {
-          nboard[y][x] = 11;
+          board[y][x] = 11;
           for (let y = 0; y < bombMap.length; y++) {
             for (let x = 0; x < bombMap[y].length; x++) {
               if (bombMap[y][x] === 1) {
-                newboard[y][x] = 11;
+                board[y][x] = 11;
               }
             }
           }
         }
       }
     }
-    setnewBoard(newboard);
   };
 
-  function blank(x: number, y: number) {
+  const blank = (x: number, y: number) => {
     let count = 0;
-    for (const [dx, dy] of directions) {
+    for (const direction of directions) {
+      const [dx, dy] = direction;
       const nx = x + dx;
       const ny = y + dy;
       if (board[ny] !== undefined && board[ny][nx] !== undefined) {
@@ -90,16 +90,16 @@ const Home = () => {
     }
     board[y][x] = count;
     if (count === 0) {
-      // このマスの周りに爆弾がない場合
-      for (const [dx, dy] of directions) {
+      for (const direction of directions) {
+        const [dx, dy] = direction;
         const nx = x + dx;
         const ny = y + dy;
         if (board[ny] !== undefined && board[ny][nx] !== undefined && board[ny][nx] === -1) {
-          blank(nx, ny); // 隣接するマスも再帰的にチェック
+          blank(nx, ny);
         }
       }
     }
-  }
+  };
 
   //左クリック(マスを開く)
   const clickL = (x: number, y: number) => {
@@ -135,16 +135,16 @@ const Home = () => {
       if (bombCount === 0) {
         blank(x, y);
       } else {
-        nboard[y][x] = bombCount;
+        board[y][x] = bombCount;
       }
       for (let y = 0; y < bombMap.length; y++) {
         for (let x = 0; x < bombMap[y].length; x++) {
           if (newUserInputs[y][x] === 1) {
-            newboard[y][x] = bombCount;
+            board[y][x] = bombCount;
           }
         }
       }
-      setnewBoard(newboard);
+
       setUserInputs(newUserInputs);
     }
   };
@@ -174,14 +174,13 @@ const Home = () => {
     if (userInput === 1) return;
     newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
     setUserInputs(newUserInputs);
-    nboard[y][x] = newUserInputs[y][x] === 2 ? 9 : -1;
+    board[y][x] = newUserInputs[y][x] === 2 ? 9 : -1;
     for (let y = 0; y < bombMap.length; y++) {
       for (let x = 0; x < bombMap[y].length; x++) {
-        if (newUserInputs[y][x] === 2) newboard[y][x] = 9;
-        else if (newUserInputs[y][x] === 0) newboard[y][x] = -1;
+        if (newUserInputs[y][x] === 2) board[y][x] = 9;
+        else if (newUserInputs[y][x] === 0) board[y][x] = -1;
       }
     }
-    setnewBoard(newboard);
   };
 
   //爆弾設置
@@ -223,7 +222,7 @@ const Home = () => {
           <div className={styles.timer}>000</div>
         </div>
         <div className={styles.grid}>
-          {nboard.map((row, y) =>
+          {board.map((row, y) =>
             row.map((cell, x) => (
               <div
                 key={`${x}-${y}`}
