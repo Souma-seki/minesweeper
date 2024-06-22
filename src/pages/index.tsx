@@ -353,7 +353,7 @@ const Home = () => {
         blank(x, y);
       } else {
         board[y][x] = bombCount;
-        setBoard([...board]);
+        setBoard(board);
       }
       setUserInputs(newUserInputs);
     }
@@ -380,7 +380,7 @@ const Home = () => {
         blank(X2, Y2);
       }
     }
-    setBoard([...board]);
+    setBoard(board);
   };
 
   //周囲の爆弾の数表示
@@ -409,24 +409,18 @@ const Home = () => {
     newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
     setUserInputs(newUserInputs);
     board[y][x] = newUserInputs[y][x] === 2 ? 9 : -1;
-    setBoard([...board]);
+    setBoard(board);
   };
-  // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
-  // const isFailure = userInputs.some((row, y) =>
-  //   row.some((input, x) => input === 1 && bombMap[y][x] === 1),
-  // );
 
   //爆弾設置
   const renderBomb = (x: number, y: number) => {
-    return bombMap[y][x] === 1 ? (
+    return (
       <div
         className={styles.sampleStyle}
         style={{
-          backgroundPosition: '-360px',
+          backgroundPosition: '-300px',
         }}
       />
-    ) : (
-      <div className={styles.cell} />
     );
   };
 
@@ -439,7 +433,7 @@ const Home = () => {
         }
       }
     }
-    setBoard([...board]);
+    setBoard(board);
   };
 
   return (
@@ -449,7 +443,7 @@ const Home = () => {
           <div className={styles.counter}>10</div>
           <button
             className={styles.sampleStyle}
-            style={{ backgroundPosition: '-390px' }}
+            style={{ backgroundPosition: '-360px' }}
             onClick={() => {
               setUserInputs(zeroBoard);
               setBombMap(zeroBoard);
@@ -473,7 +467,7 @@ const Home = () => {
             row.map((cell, x) => (
               <div
                 key={`${x}-${y}`}
-                className={styles.cell}
+                className={`${styles.cell} ${cell !== -1 ? styles.opened : ''}`}
                 onClick={() => clickL(x, y)}
                 onContextMenu={(e) => {
                   e.preventDefault();
