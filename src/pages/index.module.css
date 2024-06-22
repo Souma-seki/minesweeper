@@ -1,92 +1,3 @@
-/* .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  min-height: 100vh;
-  padding: 0 0.5rem;
-}
-
-.sampleStyle {
-  width: 30px;
-  height: 30px;
-  background: url('../assets/images/icons.png') no-repeat;
-}
-
-.body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 270px;
-  background: #fff;
-}
-
-.minesweeper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 270px;
-  background-color: #c82121;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 270px;
-  height: 60px;
-  padding: 0 5px;
-  background-color: #143dd2;
-}
-
-.counter {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 24px;
-  color: white;
-  background-color: #ff00d0;
-}
-
-.timer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 24px;
-  color: white;
-  background-color: #ff00d0;
-}
-
-
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  gap: 1px;
-  width: 260px;
-  margin-top: 10px;
-  background-color: #999;
-}
-
-.cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  cursor: pointer; /* クリック可能にする */
-
-/* background-color: #ccc;
-  border: 2px outset #fff;
-} */
-
 .container {
   display: flex;
   flex-direction: column;
@@ -109,6 +20,16 @@
   align-items: center;
   width: 270px;
   background: #c6c6c6;
+}
+
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 270px;
+  height: 270px;
+  margin: 0 auto;
+  background-color: #bbb;
 }
 
 .minesweeper {
