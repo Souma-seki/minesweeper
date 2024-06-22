@@ -30,7 +30,7 @@ const Home = () => {
   //newUserInputs=0,開いてないマスnewUserInputs=1,開いたマスnewUserInputs=2,旗
   const newUserInputs = structuredClone(userInputs);
   const [gameOver, setGameOver] = useState(false);
-
+  const [newboard, setnewBoard] = useState(board);
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
 
@@ -67,19 +67,20 @@ const Home = () => {
           for (let y = 0; y < bombMap.length; y++) {
             for (let x = 0; x < bombMap[y].length; x++) {
               if (bombMap[y][x] === 1) {
-                board[y][x] = 11;
+                newboard[y][x] = 11;
               }
             }
           }
         }
       }
     }
+    setnewBoard(newboard);
   };
 
   //空白連鎖
   const blank = (x: number, y: number) => {
     const bombCount = bombCounts(x, y);
-    board[y][x] = bombCount;
+    nboard[y][x] = bombCount;
 
     for (const direction of directions) {
       const [fx, fy] = direction;
@@ -138,10 +139,11 @@ const Home = () => {
       for (let y = 0; y < bombMap.length; y++) {
         for (let x = 0; x < bombMap[y].length; x++) {
           if (newUserInputs[y][x] === 1) {
-            board[y][x] = bombCount;
+            newboard[y][x] = bombCount;
           }
         }
       }
+      setnewBoard(newboard);
       setUserInputs(newUserInputs);
     }
   };
@@ -174,10 +176,11 @@ const Home = () => {
     nboard[y][x] = newUserInputs[y][x] === 2 ? 9 : -1;
     for (let y = 0; y < bombMap.length; y++) {
       for (let x = 0; x < bombMap[y].length; x++) {
-        if (newUserInputs[y][x] === 2) board[y][x] = 9;
-        else if (newUserInputs[y][x] === 0) board[y][x] = -1;
+        if (newUserInputs[y][x] === 2) newboard[y][x] = 9;
+        else if (newUserInputs[y][x] === 0) newboard[y][x] = -1;
       }
     }
+    setnewBoard(newboard);
   };
 
   //爆弾設置
