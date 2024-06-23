@@ -21,35 +21,20 @@ const Home = () => {
   ]);
   const nboard = structuredClone(board);
   const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
-
   //userInputs=0,未クリック userInputs=1,クリック
   const [userInputs, setUserInputs] = useState(zeroBoard);
-
   //bombMap=0,爆弾なし bombMap=1,爆弾
   const [bombMap, setBombMap] = useState(zeroBoard);
-
   //初回クリック後のマップ
   const newBombMap = structuredClone(bombMap);
-
   //newUserInputs=0,開いてないマスnewUserInputs=1,開いたマスnewUserInputs=2,旗
   const newUserInputs = structuredClone(userInputs);
   const [gameOver, setGameOver] = useState(false);
+  const newBoard = structuredClone(board);
 
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
 
-  //難易度
-  const [difficuly, setDifficuly] = useState(1);
-
-  const easy = () => {
-    setDifficuly(1);
-  };
-  const normal = () => {
-    setDifficuly(2);
-  };
-  const hard = () => {
-    setDifficuly(3);
-  };
   const directions = [
     [0, 1], // 下
     [0, -1], // 上
@@ -60,7 +45,6 @@ const Home = () => {
     [-1, 1], // 左下
     [-1, -1], // 左上
   ];
-
   //爆弾の数を数える
   const bombCounts = (x: number, y: number) => {
     let count = 0;
@@ -80,40 +64,37 @@ const Home = () => {
     for (let y = 0; y < bombMap.length; y++) {
       for (let x = 0; x < bombMap[y].length; x++) {
         if (bombMap[y][x] === 1) {
-          nboard[y][x] = 11;
-          for (let y = 0; y < bombMap.length; y++) {
-            for (let x = 0; x < bombMap[y].length; x++) {
-              if (bombMap[y][x] === 1) {
-                board[y][x] = 11;
-              }
-            }
-          }
+          newBoard[y][x] = 11;
         }
       }
+      setBoard(newBoard);
     }
   };
 
-  //空白連鎖
   const blank = (x: number, y: number) => {
     let count = 0;
     for (const direction of directions) {
       const [dx, dy] = direction;
       const nx = x + dx;
       const ny = y + dy;
-      if (board[ny] !== undefined && board[ny][nx] !== undefined) {
+      if (newBoard[ny] !== undefined && newBoard[ny][nx] !== undefined) {
         if (newBombMap[ny][nx] === 1) {
           count++;
         }
       }
     }
-    board[y][x] = count;
+    newBoard[y][x] = count;
     newUserInputs[y][x] = 1;
     if (count === 0) {
       for (const direction of directions) {
         const [dx, dy] = direction;
         const nx = x + dx;
         const ny = y + dy;
-        if (board[ny] !== undefined && board[ny][nx] !== undefined && newUserInputs[ny][nx] === 0) {
+        if (
+          newBoard[ny] !== undefined &&
+          newBoard[ny][nx] !== undefined &&
+          newUserInputs[ny][nx] === 0
+        ) {
           blank(nx, ny);
         }
       }
@@ -125,6 +106,7 @@ const Home = () => {
     const flag = userInputs[y][x];
     if (gameOver) return;
     if (flag === 2) return;
+
     if (First()) {
       const setUpBombMap = () => {
         newBombMap[y][x] = 1;
@@ -141,22 +123,14 @@ const Home = () => {
     const userInput = userInputs[y][x];
     if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
       newUserInputs[y][x] = 1;
+
       if (bombMap[y][x] === 1) {
         alert('GameOver');
         setGameOver(true);
         openBombs();
         return;
       }
-      let noBomb = 0;
-      for (let y = 0; y < bombMap.length; y++) {
-        for (let x = 0; x < bombMap[y].length; x++)
-          if (board[y][x] !== -1) {
-            noBomb++;
-          }
-        if (noBomb === 71) {
-          alert('GameClear');
-        }
-      }
+
       const bombCount = bombCounts(x, y);
       if (bombCount === 0) {
         blank(x, y);
@@ -170,6 +144,7 @@ const Home = () => {
           }
         }
       }
+
       setUserInputs(newUserInputs);
     }
   };
@@ -197,15 +172,17 @@ const Home = () => {
   const clickR = (x: number, y: number) => {
     const userInput = userInputs[y][x];
     if (userInput === 1) return;
+
     newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
     setUserInputs(newUserInputs);
-    nboard[y][x] = newUserInputs[y][x] === 2 ? 9 : -1;
+
     for (let y = 0; y < bombMap.length; y++) {
       for (let x = 0; x < bombMap[y].length; x++) {
-        if (newUserInputs[y][x] === 2) board[y][x] = 9;
-        else if (newUserInputs[y][x] === 0) board[y][x] = -1;
+        if (newUserInputs[y][x] === 2) newBoard[y][x] = 9;
+        else if (newUserInputs[y][x] === 0) newBoard[y][x] = -1;
       }
     }
+    setBoard(newBoard);
   };
 
   //爆弾設置
@@ -222,90 +199,58 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.level}>
-        <div
-          className={styles.easy}
-          onClick={easy}
-          style={{
-            color: difficuly !== 1 ? 'blue' : 'black',
-          }}
-        >
-          初級
+      <div className={styles.minesweeper}>
+        <div className={styles.header}>
+          <div className={styles.counter}>10</div>
+          <button
+            className={styles.sampleStyle}
+            style={{ backgroundPosition: '-360px' }}
+            onClick={() => {
+              for (let y = 0; y < 9; y++) {
+                for (let x = 0; x < 9; x++) {
+                  newBombMap[y][x] = 0;
+                  newUserInputs[y][x] = 0;
+                  newBoard[y][x] = -1;
+                }
+              }
+              setBombMap(newBombMap);
+              setUserInputs(newUserInputs);
+              setBoard(newBoard);
+            }}
+          />
+          <div className={styles.timer}>000</div>
         </div>
-        <div
-          className={styles.normal}
-          onClick={normal}
-          style={{
-            color: difficuly !== 2 ? 'blue' : 'black',
-          }}
-        >
-          中級
-        </div>
-        <div
-          className={styles.hard}
-          onClick={hard}
-          style={{
-            color: difficuly !== 3 ? 'blue' : 'black',
-          }}
-        >
-          上級
-        </div>
-        <div className={styles.minesweeper}>
-          <div className={styles.header}>
-            <div className={styles.counter}>10</div>
-            <button
-              className={styles.sampleStyle}
-              style={{ backgroundPosition: '-360px' }}
-              onClick={() => {
-                setUserInputs(zeroBoard);
-                setBombMap(zeroBoard);
-                setBoard([
-                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                ]);
-              }}
-            />
-            <div className={styles.timer}>000</div>
-          </div>
-          <div className={styles.grid}>
-            {nboard.map((row, y) =>
-              row.map((cell, x) => (
-                <div
-                  key={`${x}-${y}`}
-                  className={`${styles.cell} ${cell !== -1 ? styles.opened : ''}`}
-                  onClick={() => clickL(x, y)}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    clickR(x, y);
-                  }}
-                  style={{
-                    backgroundColor: cell !== -1 && cell !== 9 ? '#919191' : '#c6c6c6',
-                  }}
-                >
-                  {cell === 9 ? (
-                    <div
-                      className={styles.sampleStyle}
-                      style={{
-                        backgroundPosition: '-270px',
-                      }}
-                    />
-                  ) : (
-                    <>
-                      {cellNumber(x, y)}
-                      {cell === 11 ? renderBomb() : null}
-                    </>
-                  )}
-                </div>
-              )),
-            )}
-          </div>
+        <div className={styles.grid}>
+          {nboard.map((row, y) =>
+            row.map((cell, x) => (
+              <div
+                key={`${x}-${y}`}
+                className={`${styles.cell} ${cell !== -1 ? styles.opened : ''}`}
+                onClick={() => clickL(x, y)}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  clickR(x, y);
+                }}
+                style={{
+                  backgroundColor: cell !== -1 ? '#919191' : '#c6c6c6',
+                }}
+              >
+                {cell === 9 ? (
+                  <div
+                    className={styles.sampleStyle}
+                    style={{
+                      backgroundPosition: '-270px',
+                    }}
+                  />
+                ) : (
+                  <>
+                    {cellNumber(x, y)}
+                    {cell === 11 ? renderBomb() : null}
+                  </>
+                )}
+              </div>
+            )),
+          )}
         </div>
       </div>
     </div>

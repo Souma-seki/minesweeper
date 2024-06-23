@@ -24,38 +24,16 @@
   cursor: pointer;
 }
 
-.easy:hover {
-  text-decoration: underline;
-}
-
 .normal {
   padding: 8px;
   padding-bottom: 10px;
   cursor: pointer;
 }
 
-.normal:hover {
-  text-decoration: underline;
-}
-
 .hard {
   padding: 8px;
   padding-bottom: 10px;
   cursor: pointer;
-}
-
-.hard:hover {
-  text-decoration: underline;
-}
-
-.level4 {
-  padding: 8px;
-  padding-bottom: 10px;
-  cursor: pointer;
-}
-
-.level4:hover {
-  text-decoration: underline;
 }
 
 .body {
