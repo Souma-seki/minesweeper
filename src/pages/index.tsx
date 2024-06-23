@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
+  const [count, setCount] = useState(0);
   //難易度
   const [difficuly, setDifficuly] = useState(1);
 
@@ -13,6 +14,66 @@ const Home = () => {
   };
   const hard = () => {
     setDifficuly(3);
+  };
+
+  const cleateBoard = (x: number, y: number, fill: number) =>
+    [...Array(y)].map(() => [...Array(x)].map(() => fill));
+  let board2 = cleateBoard(9, 9, -1);
+  let bombcount = 10;
+  let inputboard = cleateBoard(9, 9, 0);
+  let bombboard = cleateBoard(9, 9, 0);
+
+  if (difficuly === 1) {
+    board2 = cleateBoard(9, 9, -1);
+    bombcount = 10;
+  }
+  if (difficuly === 2) {
+    board2 = cleateBoard(16, 16, -1);
+    bombcount = 40;
+  }
+  if (difficuly === 3) {
+    board2 = cleateBoard(30, 16, -1);
+    bombcount = 99;
+  }
+
+  const reset = (difficuly) => {
+    if (difficuly === 1) {
+      bombboard = cleateBoard(9, 9, 0);
+      inputboard = cleateBoard(9, 9, 0);
+      setCount(0);
+      setBombMap(bombboard);
+      setUserInputs(inputboard);
+    }
+    if (difficuly === 2) {
+      bombboard = cleateBoard(16, 16, 0);
+      inputboard = cleateBoard(16, 16, 0);
+      setCount(0);
+      setBombMap(bombboard);
+      setUserInputs(inputboard);
+    }
+    if (difficuly === 3) {
+      bombboard = cleateBoard(30, 16, 0);
+      inputboard = cleateBoard(30, 16, 0);
+      setCount(0);
+      setBombMap(bombboard);
+      setUserInputs(inputboard);
+    }
+  };
+
+  const Newboard = () => {
+    bombMap.forEach((row, y) => {
+      row.forEach((cell, x) => {
+        if (bombMap[y][x] === 1 && userInputs[y][x] === 1) {
+          board[y][x] = 11;
+        } else if (userInputs[y][x] === 1) {
+          blank(x, y);
+        } else if (userInputs[y][x] === 2) {
+          board[y][x] = 9;
+        } else if (bombMap[y][x] === 1 && clear) {
+          board[y][x] = 9;
+        }
+      });
+    });
   };
   //-1開いてない
   //0何もない
@@ -34,9 +95,9 @@ const Home = () => {
   const nboard = structuredClone(board);
   const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
   //userInputs=0,未クリック userInputs=1,クリック
-  const [userInputs, setUserInputs] = useState(zeroBoard);
+  const [userInputs, setUserInputs] = useState(inputboard);
   //bombMap=0,爆弾なし bombMap=1,爆弾
-  const [bombMap, setBombMap] = useState(zeroBoard);
+  const [bombMap, setBombMap] = useState(bombboard);
   //初回クリック後のマップ
   const newBombMap = structuredClone(bombMap);
   //newUserInputs=0,開いてないマスnewUserInputs=1,開いたマスnewUserInputs=2,旗
@@ -46,6 +107,19 @@ const Home = () => {
 
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
+  const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
+  const isFailure = userInputs.some((row, y) =>
+    row.some((input, x) => input === 1 && bombMap[y][x] === 1),
+  );
+  //クリア
+  const clear = board.every((row, y) =>
+    row.every((cell, x) => {
+      if (bombMap[y][x] !== 1) {
+        return userInputs[y][x] === 1;
+      }
+      return true;
+    }),
+  );
 
   const directions = [
     [0, 1], // 下
@@ -115,9 +189,10 @@ const Home = () => {
 
   //左クリック(マスを開く)
   const clickL = (x: number, y: number) => {
-    const flag = userInputs[y][x];
-    if (gameOver) return;
-    if (flag === 2) return;
+    // const flag = userInputs[y][x];
+    // if (gameOver) return;
+    // if (flag === 2) return;
+    if (isFailure || clear) return;
 
     if (First()) {
       const setUpBombMap = () => {
@@ -132,17 +207,20 @@ const Home = () => {
       setUpBombMap();
       setBombMap(newBombMap);
     }
-    const userInput = userInputs[y][x];
-    if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
-      newUserInputs[y][x] = 1;
 
-      if (bombMap[y][x] === 1) {
+    const userInput = userInputs[y][x];
+    if (board[y][x] === -1 && userInput === 0) {
+      newUserInputs[y][x] = 1;
+      setUserInputs(newUserInputs);
+
+      if (board[y][x] === -1 && bombMap[y][x] === 1) {
         alert('GameOver');
         setGameOver(true);
         openBombs();
         return;
       }
 
+      ////
       const bombCount = bombCounts(x, y);
       if (bombCount === 0) {
         blank(x, y);
@@ -160,7 +238,7 @@ const Home = () => {
       setUserInputs(newUserInputs);
     }
   };
-
+  ////
   //周囲の爆弾の数表示
   const cellNumber = (x: number, y: number) => {
     const userInput = userInputs[y][x];
