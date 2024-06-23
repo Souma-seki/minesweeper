@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './index.module.css';
+import { before } from 'node:test';
 
 const Home = () => {
   const [count, setCount] = useState(0);
@@ -93,7 +94,7 @@ const Home = () => {
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
   ]);
   const nboard = structuredClone(board);
-  const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
+  // const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
   //userInputs=0,未クリック userInputs=1,クリック
   const [userInputs, setUserInputs] = useState(inputboard);
   //bombMap=0,爆弾なし bombMap=1,爆弾
@@ -207,20 +208,17 @@ const Home = () => {
       setUpBombMap();
       setBombMap(newBombMap);
     }
-
     const userInput = userInputs[y][x];
-    if (board[y][x] === -1 && userInput === 0) {
+    if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
       newUserInputs[y][x] = 1;
-      setUserInputs(newUserInputs);
 
-      if (board[y][x] === -1 && bombMap[y][x] === 1) {
+      if (bombMap[y][x] === 1) {
         alert('GameOver');
         setGameOver(true);
         openBombs();
         return;
       }
 
-      ////
       const bombCount = bombCounts(x, y);
       if (bombCount === 0) {
         blank(x, y);
@@ -238,7 +236,7 @@ const Home = () => {
       setUserInputs(newUserInputs);
     }
   };
-  ////
+
   //周囲の爆弾の数表示
   const cellNumber = (x: number, y: number) => {
     const userInput = userInputs[y][x];
@@ -260,21 +258,44 @@ const Home = () => {
 
   //右クリック（旗を置く）
   const clickR = (x: number, y: number) => {
-    const userInput = userInputs[y][x];
-    if (userInput === 1) return;
+    if (isFailure || clear) return;
 
-    newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
+    if (board[y][x] === -1 && newUserInputs[y][x] === 0) {
+      newUserInputs[y][x] = 2;
+    } else if (newUserInputs[y][x] === 2) {
+      newUserInputs[y][x] = 0;
+    }
     setUserInputs(newUserInputs);
 
-    for (let y = 0; y < bombMap.length; y++) {
-      for (let x = 0; x < bombMap[y].length; x++) {
-        if (newUserInputs[y][x] === 2) newBoard[y][x] = 9;
-        else if (newUserInputs[y][x] === 0) newBoard[y][x] = -1;
-      }
-    }
-    setBoard(newBoard);
+    // newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
+    // setUserInputs(newUserInputs);
+
+    // for (let y = 0; y < bombMap.length; y++) {
+    //   for (let x = 0; x < bombMap[y].length; x++) {
+    //     if (newUserInputs[y][x] === 2) newBoard[y][x] = 9;
+    //     else if (newUserInputs[y][x] === 0) newBoard[y][x] = -1;
+    //   }
+    // }
+    // setBoard(newBoard);
   };
 
+  const NumBoard = (col: number) => board.flat().filter((c) => c === col).length;
+
+  Newboard();
+
+  const choiceEasy = () => {
+    setDifficuly(1);
+    reset(1);
+  };
+
+  const choiceNormal = () => {
+    setDifficuly(3);
+    reset(3);
+  };
+  const choiceHard = () => {
+    setDifficuly(3);
+    reset(3);
+  };
   //爆弾設置
   const renderBomb = () => {
     return (
