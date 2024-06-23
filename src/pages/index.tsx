@@ -150,6 +150,7 @@ const Home = () => {
       for (let x = 0; x < bombMap[y].length; x++) {
         if (bombMap[y][x] === 1) {
           board[y][x] = 11;
+          userInputs[y][x] = 1;
         }
       }
     }
@@ -259,17 +260,6 @@ const Home = () => {
       newUserInputs[y][x] = 0;
     }
     setUserInputs(newUserInputs);
-
-    // newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
-    // setUserInputs(newUserInputs);
-
-    // for (let y = 0; y < bombMap.length; y++) {
-    //   for (let x = 0; x < bombMap[y].length; x++) {
-    //     if (newUserInputs[y][x] === 2) newBoard[y][x] = 9;
-    //     else if (newUserInputs[y][x] === 0) newBoard[y][x] = -1;
-    //   }
-    // }
-    // setBoard(newBoard);
   };
 
   const NumBoard = (col: number) => board.flat().filter((c) => c === col).length;
