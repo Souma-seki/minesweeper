@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import styles from './index.module.css';
-import { before } from 'node:test';
 
 const Home = () => {
   const [count, setCount] = useState(0);
@@ -19,21 +18,21 @@ const Home = () => {
 
   const cleateBoard = (x: number, y: number, fill: number) =>
     [...Array(y)].map(() => [...Array(x)].map(() => fill));
-  let board2 = cleateBoard(9, 9, -1);
+  let board = cleateBoard(9, 9, -1);
   let bombcount = 10;
   let inputboard = cleateBoard(9, 9, 0);
   let bombboard = cleateBoard(9, 9, 0);
 
   if (difficuly === 1) {
-    board2 = cleateBoard(9, 9, -1);
+    board = cleateBoard(9, 9, -1);
     bombcount = 10;
   }
   if (difficuly === 2) {
-    board2 = cleateBoard(16, 16, -1);
+    board = cleateBoard(16, 16, -1);
     bombcount = 40;
   }
   if (difficuly === 3) {
-    board2 = cleateBoard(30, 16, -1);
+    board = cleateBoard(30, 16, -1);
     bombcount = 99;
   }
 
@@ -82,17 +81,17 @@ const Home = () => {
   //9旗
   //10爆弾
   //11クリックした爆弾
-  const [board, setBoard] = useState([
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  ]);
+  // const [board, setBoard] = useState([
+  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  // ]);
   // const nboard = structuredClone(board);
   // const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
   //userInputs=0,未クリック userInputs=1,クリック
@@ -104,7 +103,6 @@ const Home = () => {
   //newUserInputs=0,開いてないマスnewUserInputs=1,開いたマスnewUserInputs=2,旗
   const newUserInputs = structuredClone(userInputs);
   const [gameOver, setGameOver] = useState(false);
-  const newBoard = structuredClone(board);
 
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
@@ -151,10 +149,9 @@ const Home = () => {
     for (let y = 0; y < bombMap.length; y++) {
       for (let x = 0; x < bombMap[y].length; x++) {
         if (bombMap[y][x] === 1) {
-          newBoard[y][x] = 11;
+          board[y][x] = 11;
         }
       }
-      setBoard(newBoard);
     }
   };
 
@@ -164,24 +161,20 @@ const Home = () => {
       const [dx, dy] = direction;
       const nx = x + dx;
       const ny = y + dy;
-      if (newBoard[ny] !== undefined && newBoard[ny][nx] !== undefined) {
+      if (board[ny] !== undefined && board[ny][nx] !== undefined) {
         if (newBombMap[ny][nx] === 1) {
           count++;
         }
       }
     }
-    newBoard[y][x] = count;
+    board[y][x] = count;
     newUserInputs[y][x] = 1;
     if (count === 0) {
       for (const direction of directions) {
         const [dx, dy] = direction;
         const nx = x + dx;
         const ny = y + dy;
-        if (
-          newBoard[ny] !== undefined &&
-          newBoard[ny][nx] !== undefined &&
-          newUserInputs[ny][nx] === 0
-        ) {
+        if (board[ny] !== undefined && board[ny][nx] !== undefined && newUserInputs[ny][nx] === 0) {
           blank(nx, ny);
         }
       }
@@ -350,12 +343,11 @@ const Home = () => {
                 for (let x = 0; x < 9; x++) {
                   newBombMap[y][x] = 0;
                   newUserInputs[y][x] = 0;
-                  newBoard[y][x] = -1;
+                  board[y][x] = -1;
                 }
               }
               setBombMap(newBombMap);
               setUserInputs(newUserInputs);
-              setBoard(newBoard);
             }}
           />
           <div className={styles.timer}>000</div>
