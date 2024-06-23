@@ -93,7 +93,7 @@ const Home = () => {
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
   ]);
-  const nboard = structuredClone(board);
+  // const nboard = structuredClone(board);
   // const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
   //userInputs=0,未クリック userInputs=1,クリック
   const [userInputs, setUserInputs] = useState(inputboard);
@@ -212,7 +212,7 @@ const Home = () => {
     if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
       newUserInputs[y][x] = 1;
 
-      if (bombMap[y][x] === 1) {
+      if (board[y][x] === -1 && bombMap[y][x] === 1) {
         alert('GameOver');
         setGameOver(true);
         openBombs();
@@ -223,7 +223,7 @@ const Home = () => {
       if (bombCount === 0) {
         blank(x, y);
       } else {
-        nboard[y][x] = bombCount;
+        board[y][x] = bombCount;
       }
       for (let y = 0; y < bombMap.length; y++) {
         for (let x = 0; x < bombMap[y].length; x++) {
@@ -361,7 +361,7 @@ const Home = () => {
           <div className={styles.timer}>000</div>
         </div>
         <div className={styles.grid}>
-          {nboard.map((row, y) =>
+          {board.map((row, y) =>
             row.map((cell, x) => (
               <div
                 key={`${x}-${y}`}
