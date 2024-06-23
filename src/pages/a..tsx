@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import React, { useEffect } from 'react';
+// import React, { useEffect } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
@@ -37,7 +37,7 @@ const Home = () => {
     bombcount = 99;
   }
   const [bombMap, setBombMap] = useState(bombboard);
-  const [userIn, setUserIn] = useState(inputboard);
+  const [userIn, setUserIn] = useState(inputboard); ////
   const difficultResetgame = (difficulty: 'Easy' | 'Normal' | 'Hard') => {
     console.log(difficulty);
     if (difficulty === 'Easy') {
@@ -60,14 +60,14 @@ const Home = () => {
       setUserIn(inputboard);
     }
   };
-
+  ////
   const updateboard = () => {
     bombMap.forEach((row, i) => {
       row.forEach((cell, j) => {
         if (bombMap[i][j] === 1 && userIn[i][j] === 1) {
           board[i][j] = 11;
         } else if (userIn[i][j] === 1) {
-          arounder(i, j);
+          // arounder(i, j);
         } else if (userIn[i][j] === 2) {
           board[i][j] = 9;
         } else if (userIn[i][j] === 3) {
@@ -78,7 +78,7 @@ const Home = () => {
       });
     });
   };
-
+  ////
   const isPlaying = userIn.some((row) => row.some((input) => input !== 0));
   const isFailure = userIn.some((row, y) =>
     row.some((input, x) => input === 1 && bombMap[y][x] === 1),
@@ -91,19 +91,20 @@ const Home = () => {
       return true;
     }),
   );
+  ////
 
-  useEffect(() => {
-    if (isClear || isFailure) {
-      return;
-    }
-    if (isPlaying) {
-      const interval = setInterval(() => {
-        setCount((count) => count + 1);
-      }, 1000);
+  // useEffect(() => {
+  //   if (isClear || isFailure) {
+  //     return;
+  //   }
+  //   if (isPlaying) {
+  //     const interval = setInterval(() => {
+  //       setCount((count) => count + 1);
+  //     }, 1000);
 
-      return () => clearInterval(interval);
-    }
-  }, [isClear, isFailure, isPlaying]);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [isClear, isFailure, isPlaying]);
 
   const clickHandler = (x: number, y: number) => {
     if (isFailure || isClear) return;
@@ -130,72 +131,73 @@ const Home = () => {
       newUserIn[y][x] = 1;
       setUserIn(newUserIn);
     }
+    ////
 
     if (board[y][x] === -1 && bombMap[y][x] === 1) {
       isFailure;
     }
   };
 
-  const arounder = (i: number, j: number) => {
-    const directions = [
-      [-1, 0],
-      [-1, -1],
-      [0, -1],
-      [1, -1],
-      [1, 0],
-      [1, 1],
-      [0, 1],
-      [-1, 1],
-    ];
+  // const arounder = (i: number, j: number) => {
+  //   const directions = [
+  //     [-1, 0],
+  //     [-1, -1],
+  //     [0, -1],
+  //     [1, -1],
+  //     [1, 0],
+  //     [1, 1],
+  //     [0, 1],
+  //     [-1, 1],
+  //   ];
 
-    let aroundcount = 0;
+  //   let aroundcount = 0;
 
-    for (const direct of directions) {
-      const [I, J] = direct;
-      if (j + J >= 0 && j + J < board[0].length && i + I >= 0 && i + I < board.length) {
-        if (bombMap[i + I] !== undefined && bombMap[i + I][j + J] !== undefined) {
-          if (bombMap[i + I][j + J] === 1) {
-            aroundcount++;
-          }
-          board[i][j] = aroundcount;
-        }
-      }
-    }
+  //   for (const direct of directions) {
+  //     const [I, J] = direct;
+  //     if (j + J >= 0 && j + J < board[0].length && i + I >= 0 && i + I < board.length) {
+  //       if (bombMap[i + I] !== undefined && bombMap[i + I][j + J] !== undefined) {
+  //         if (bombMap[i + I][j + J] === 1) {
+  //           aroundcount++;
+  //         }
+  //         board[i][j] = aroundcount;
+  //       }
+  //     }
+  //   }
 
-    board[i][j] = aroundcount;
+  //   board[i][j] = aroundcount;
 
-    if (aroundcount === 0) {
-      userIn[i][j] = 1;
-      for (const direct of directions) {
-        const [I, J] = direct;
-        if (j + J >= 0 && j + J < board[0].length && i + I >= 0 && i + I < board.length) {
-          if (bombMap[i + I][j + J] === 1 && (userIn[i][j] === 2 || userIn[i][j] === 3)) {
-            userIn[i][j] = 0;
-          }
-          if (
-            userIn[i + I][j + J] === 0 ||
-            userIn[i + I][j + J] === 2 ||
-            userIn[i + I][j + J] === 3
-          ) {
-            if (userIn[i + I][j + J] === 2 || userIn[i + I][j + J] === 3) {
-              userIn[i + I][j + J] = 0;
-            }
-            if (board[i + I][j + J] === -1) {
-              board[i + I][j + J] = aroundcount + 1;
-              userIn[i + I][j + J] = 1;
+  //   if (aroundcount === 0) {
+  //     userIn[i][j] = 1;
+  //     for (const direct of directions) {
+  //       const [I, J] = direct;
+  //       if (j + J >= 0 && j + J < board[0].length && i + I >= 0 && i + I < board.length) {
+  //         if (bombMap[i + I][j + J] === 1 && (userIn[i][j] === 2 || userIn[i][j] === 3)) {
+  //           userIn[i][j] = 0;
+  //         }
+  //         if (
+  //           userIn[i + I][j + J] === 0 ||
+  //           userIn[i + I][j + J] === 2 ||
+  //           userIn[i + I][j + J] === 3
+  //         ) {
+  //           if (userIn[i + I][j + J] === 2 || userIn[i + I][j + J] === 3) {
+  //             userIn[i + I][j + J] = 0;
+  //           }//
+  //           if (board[i + I][j + J] === -1) {
+  //             board[i + I][j + J] = aroundcount + 1;
+  //             userIn[i + I][j + J] = 1;
 
-              arounder(i + I, j + J);
-            }
-          }
-        }
-      }
-    }
-  };
+  //             arounder(i + I, j + J);
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
 
   const RightClick = (event: React.MouseEvent, x: number, y: number) => {
     event.preventDefault();
 
-    if (isFailure || isClear) return;
+    if (isFailure || isClear) return; //
 
     const newUserIn = structuredClone(userIn);
 

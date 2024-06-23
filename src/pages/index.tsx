@@ -3,6 +3,7 @@ import styles from './index.module.css';
 
 const Home = () => {
   const [count, setCount] = useState(0);
+  console.log(count);
   //難易度
   const [difficuly, setDifficuly] = useState(1);
 
@@ -15,6 +16,9 @@ const Home = () => {
   const hard = () => {
     setDifficuly(3);
   };
+  console.log(easy);
+  console.log(normal);
+  console.log(hard);
 
   const cleateBoard = (x: number, y: number, fill: number) =>
     [...Array(y)].map(() => [...Array(x)].map(() => fill));
@@ -36,7 +40,7 @@ const Home = () => {
     bombcount = 99;
   }
 
-  const reset = (difficuly) => {
+  const reset = (difficuly: number) => {
     if (difficuly === 1) {
       bombboard = cleateBoard(9, 9, 0);
       inputboard = cleateBoard(9, 9, 0);
@@ -81,19 +85,7 @@ const Home = () => {
   //9旗
   //10爆弾
   //11クリックした爆弾
-  // const [board, setBoard] = useState([
-  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  //   [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  // ]);
-  // const nboard = structuredClone(board);
-  // const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
+
   //userInputs=0,未クリック userInputs=1,クリック
   const [userInputs, setUserInputs] = useState(inputboard);
   //bombMap=0,爆弾なし bombMap=1,爆弾
@@ -110,6 +102,8 @@ const Home = () => {
   const isFailure = userInputs.some((row, y) =>
     row.some((input, x) => input === 1 && bombMap[y][x] === 1),
   );
+  console.log(bombcount);
+  console.log(isPlaying);
   //クリア
   const clear = board.every((row, y) =>
     row.every((cell, x) => {
@@ -130,6 +124,7 @@ const Home = () => {
     [-1, 1], // 左下
     [-1, -1], // 左上
   ];
+
   //爆弾の数を数える
   const bombCounts = (x: number, y: number) => {
     let count = 0;
@@ -143,7 +138,7 @@ const Home = () => {
     }
     return count;
   };
-
+  console.table(userInputs);
   //爆弾召喚
   const openBombs = () => {
     for (let y = 0; y < bombMap.length; y++) {
@@ -156,6 +151,7 @@ const Home = () => {
     }
   };
 
+  //空白連鎖
   const blank = (x: number, y: number) => {
     let count = 0;
     for (const direction of directions) {
@@ -184,10 +180,9 @@ const Home = () => {
 
   //左クリック(マスを開く)
   const clickL = (x: number, y: number) => {
-    // const flag = userInputs[y][x];
-    // if (gameOver) return;
-    // if (flag === 2) return;
-    if (isFailure || clear) return;
+    const flag = userInputs[y][x];
+    if (gameOver) return;
+    if (flag === 2) return;
 
     if (First()) {
       const setUpBombMap = () => {
@@ -262,8 +257,6 @@ const Home = () => {
     setUserInputs(newUserInputs);
   };
 
-  const NumBoard = (col: number) => board.flat().filter((c) => c === col).length;
-
   Newboard();
 
   const choiceEasy = () => {
@@ -272,8 +265,8 @@ const Home = () => {
   };
 
   const choiceNormal = () => {
-    setDifficuly(3);
-    reset(3);
+    setDifficuly(2);
+    reset(2);
   };
   const choiceHard = () => {
     setDifficuly(3);
@@ -295,35 +288,33 @@ const Home = () => {
     <div className={styles.container}>
       <div className={styles.level}>
         <div
-          className={styles.easy}
-          onClick={easy}
-          style={{
-            color: difficuly !== 1 ? 'blue' : 'black',
-          }}
+          className={`${styles.easy} ${difficuly === 1 ? styles.active : ''}`}
+          onClick={choiceEasy}
         >
           初級
         </div>
         <div
-          className={styles.normal}
-          onClick={normal}
-          style={{
-            color: difficuly !== 2 ? 'blue' : 'black',
-          }}
+          className={`${styles.normal} ${difficuly === 2 ? styles.active : ''}`}
+          onClick={choiceNormal}
         >
           中級
         </div>
         <div
-          className={styles.hard}
-          onClick={hard}
-          style={{
-            color: difficuly !== 3 ? 'blue' : 'black',
-          }}
+          className={`${styles.hard} ${difficuly === 3 ? styles.active : ''}`}
+          onClick={choiceHard}
         >
           上級
         </div>
       </div>
       <div className={styles.minesweeper}>
+        <div
+          className={`${difficuly === 1 ? styles.boardoutsideflame1 : ''} ${difficuly === 2 ? styles.boardoutsideflame2 : ''} ${difficuly === 3 ? styles.boardoutsideflame3 : ''}`}
+        />
         <div className={styles.header}>
+          <div
+            className={`${difficuly === 1 ? styles.topflame1 : ''} ${difficuly === 2 ? styles.topflame2 : ''} ${difficuly === 3 ? styles.topflame3 : ''}`}
+            onClick={() => reset(difficuly)}
+          />
           <div className={styles.counter}>10</div>
           <button
             className={styles.sampleStyle}
@@ -342,6 +333,13 @@ const Home = () => {
           />
           <div className={styles.timer}>000</div>
         </div>
+        <div
+          className={`${difficuly === 1 ? styles.boardflame1 : ''} ${difficuly === 2 ? styles.boardflame2 : ''} ${difficuly === 3 ? styles.boardflame3 : ''}`}
+        />
+        <div
+          className={`${difficuly === 1 ? styles.boardstyle1 : ''} ${difficuly === 2 ? styles.boardstyle2 : ''} ${difficuly === 3 ? styles.boardstyle3 : ''}`}
+        />
+
         <div className={styles.grid}>
           {board.map((row, y) =>
             row.map((cell, x) => (
