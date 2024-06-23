@@ -38,6 +38,18 @@ const Home = () => {
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
 
+  //難易度
+  const [difficuly, setDifficuly] = useState(1);
+
+  const easy = () => {
+    setDifficuly(1);
+  };
+  const normal = () => {
+    setDifficuly(2);
+  };
+  const hard = () => {
+    setDifficuly(3);
+  };
   const directions = [
     [0, 1], // 下
     [0, -1], // 上
@@ -138,7 +150,7 @@ const Home = () => {
       let noBomb = 0;
       for (let y = 0; y < bombMap.length; y++) {
         for (let x = 0; x < bombMap[y].length; x++)
-          if (board[y][x] !== 10 && board[y][x] !== -1) {
+          if (board[y][x] !== -1) {
             noBomb++;
           }
         if (noBomb === 71) {
@@ -210,61 +222,90 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.minesweeper}>
-        <div className={styles.header}>
-          <div className={styles.counter}>10</div>
-          <button
-            className={styles.sampleStyle}
-            style={{ backgroundPosition: '-360px' }}
-            onClick={() => {
-              setUserInputs(zeroBoard);
-              setBombMap(zeroBoard);
-              setBoard([
-                [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-              ]);
-            }}
-          />
-          <div className={styles.timer}>000</div>
+      <div className={styles.level}>
+        <div
+          className={styles.Easy}
+          onClick={easy}
+          style={{
+            color: difficuly !== 1 ? 'blue' : 'black',
+          }}
+        >
+          初級
         </div>
-        <div className={styles.grid}>
-          {nboard.map((row, y) =>
-            row.map((cell, x) => (
-              <div
-                key={`${x}-${y}`}
-                className={`${styles.cell} ${cell !== -1 ? styles.opened : ''}`}
-                onClick={() => clickL(x, y)}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  clickR(x, y);
-                }}
-                style={{
-                  backgroundColor: cell !== -1 && cell !== 9 ? '#919191' : '#c6c6c6',
-                }}
-              >
-                {cell === 9 ? (
-                  <div
-                    className={styles.sampleStyle}
-                    style={{
-                      backgroundPosition: '-270px',
-                    }}
-                  />
-                ) : (
-                  <>
-                    {cellNumber(x, y)}
-                    {cell === 11 ? renderBomb() : null}
-                  </>
-                )}
-              </div>
-            )),
-          )}
+        <div
+          className={styles.Normal}
+          onClick={normal}
+          style={{
+            color: difficuly !== 2 ? 'blue' : 'black',
+          }}
+        >
+          中級
+        </div>
+        <div
+          className={styles.Hard}
+          onClick={hard}
+          style={{
+            color: difficuly !== 3 ? 'blue' : 'black',
+          }}
+        >
+          上級
+        </div>
+        <div className={styles.minesweeper}>
+          <div className={styles.header}>
+            <div className={styles.counter}>10</div>
+            <button
+              className={styles.sampleStyle}
+              style={{ backgroundPosition: '-360px' }}
+              onClick={() => {
+                setUserInputs(zeroBoard);
+                setBombMap(zeroBoard);
+                setBoard([
+                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                  [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                ]);
+              }}
+            />
+            <div className={styles.timer}>000</div>
+          </div>
+          <div className={styles.grid}>
+            {nboard.map((row, y) =>
+              row.map((cell, x) => (
+                <div
+                  key={`${x}-${y}`}
+                  className={`${styles.cell} ${cell !== -1 ? styles.opened : ''}`}
+                  onClick={() => clickL(x, y)}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    clickR(x, y);
+                  }}
+                  style={{
+                    backgroundColor: cell !== -1 && cell !== 9 ? '#919191' : '#c6c6c6',
+                  }}
+                >
+                  {cell === 9 ? (
+                    <div
+                      className={styles.sampleStyle}
+                      style={{
+                        backgroundPosition: '-270px',
+                      }}
+                    />
+                  ) : (
+                    <>
+                      {cellNumber(x, y)}
+                      {cell === 11 ? renderBomb() : null}
+                    </>
+                  )}
+                </div>
+              )),
+            )}
+          </div>
         </div>
       </div>
     </div>
