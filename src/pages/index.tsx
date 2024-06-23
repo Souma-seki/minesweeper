@@ -224,7 +224,7 @@ const Home = () => {
     <div className={styles.container}>
       <div className={styles.level}>
         <div
-          className={styles.Easy}
+          className={styles.easy}
           onClick={easy}
           style={{
             color: difficuly !== 1 ? 'blue' : 'black',
@@ -233,7 +233,7 @@ const Home = () => {
           初級
         </div>
         <div
-          className={styles.Normal}
+          className={styles.normal}
           onClick={normal}
           style={{
             color: difficuly !== 2 ? 'blue' : 'black',
@@ -242,7 +242,7 @@ const Home = () => {
           中級
         </div>
         <div
-          className={styles.Hard}
+          className={styles.hard}
           onClick={hard}
           style={{
             color: difficuly !== 3 ? 'blue' : 'black',
