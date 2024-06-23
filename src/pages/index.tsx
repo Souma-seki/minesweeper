@@ -2,6 +2,18 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
+  //難易度
+  const [difficuly, setDifficuly] = useState(1);
+
+  const easy = () => {
+    setDifficuly(1);
+  };
+  const normal = () => {
+    setDifficuly(2);
+  };
+  const hard = () => {
+    setDifficuly(3);
+  };
   //-1開いてない
   //0何もない
   //1~8
@@ -199,6 +211,35 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
+      <div className={styles.level}>
+        <div
+          className={styles.easy}
+          onClick={easy}
+          style={{
+            color: difficuly !== 1 ? 'blue' : 'black',
+          }}
+        >
+          初級
+        </div>
+        <div
+          className={styles.normal}
+          onClick={normal}
+          style={{
+            color: difficuly !== 2 ? 'blue' : 'black',
+          }}
+        >
+          中級
+        </div>
+        <div
+          className={styles.hard}
+          onClick={hard}
+          style={{
+            color: difficuly !== 3 ? 'blue' : 'black',
+          }}
+        >
+          上級
+        </div>
+      </div>
       <div className={styles.minesweeper}>
         <div className={styles.header}>
           <div className={styles.counter}>10</div>
