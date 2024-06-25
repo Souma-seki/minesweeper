@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './index.module.css';
+import { time } from 'console';
 
 const Home = () => {
   //難易度
@@ -85,10 +86,11 @@ const Home = () => {
   //newUserInputs=0,開いてないマスnewUserInputs=1,開いたマスnewUserInputs=2,旗
   const newUserInputs = structuredClone(userInputs);
   const [gameOver, setGameOver] = useState(false);
+  const [timer, setTimer] = useState(0);
 
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
-  // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
+  const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
   const isFailure = userInputs.some((row, y) =>
     row.some((input, x) => input === 1 && bombMap[y][x] === 1),
   );
@@ -102,6 +104,19 @@ const Home = () => {
       return true;
     }),
   );
+
+  //タイマー
+  useEffect(() => {
+    if (isFailure || clear) {
+      return;
+    }
+    if (isPlaying) {
+      const time = setInterval(() => {
+        setTimer((timer) => timer + 1);
+      }, 1000);
+      return () => clearInterval(time);
+    }
+  }, [isFailure, clear, isPlaying]);
 
   const directions = [
     [0, 1], // 下
@@ -316,7 +331,7 @@ const Home = () => {
               setUserInputs(newUserInputs);
             }}
           />
-          <div className={styles.timer}>000</div>
+          <div className={styles.timer}>{timer}</div>
         </div>
       </div>
       <div
