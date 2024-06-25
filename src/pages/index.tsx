@@ -2,28 +2,23 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
-  const [count, setCount] = useState(0);
-  console.log(count);
   //難易度
   const [difficuly, setDifficuly] = useState(1);
 
-  const easy = () => {
-    setDifficuly(1);
-  };
-  const normal = () => {
-    setDifficuly(2);
-  };
-  const hard = () => {
-    setDifficuly(3);
-  };
-  console.log(easy);
-  console.log(normal);
-  console.log(hard);
+  // const easy = () => {
+  //   setDifficuly(1);
+  // };
+  // const normal = () => {
+  //   setDifficuly(2);
+  // };
+  // const hard = () => {
+  //   setDifficuly(3);
+  // };
 
   const cleateBoard = (x: number, y: number, fill: number) =>
     [...Array(y)].map(() => [...Array(x)].map(() => fill));
   let board = cleateBoard(9, 9, -1);
-  let bombcount = 10;
+  let bombcount = 0;
   let inputboard = cleateBoard(9, 9, 0);
   let bombboard = cleateBoard(9, 9, 0);
 
@@ -44,21 +39,16 @@ const Home = () => {
     if (difficuly === 1) {
       bombboard = cleateBoard(9, 9, 0);
       inputboard = cleateBoard(9, 9, 0);
-      setCount(0);
       setBombMap(bombboard);
       setUserInputs(inputboard);
-    }
-    if (difficuly === 2) {
+    } else if (difficuly === 2) {
       bombboard = cleateBoard(16, 16, 0);
       inputboard = cleateBoard(16, 16, 0);
-      setCount(0);
       setBombMap(bombboard);
       setUserInputs(inputboard);
-    }
-    if (difficuly === 3) {
+    } else if (difficuly === 3) {
       bombboard = cleateBoard(30, 16, 0);
       inputboard = cleateBoard(30, 16, 0);
-      setCount(0);
       setBombMap(bombboard);
       setUserInputs(inputboard);
     }
@@ -98,12 +88,11 @@ const Home = () => {
 
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
-  const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
+  // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
   const isFailure = userInputs.some((row, y) =>
     row.some((input, x) => input === 1 && bombMap[y][x] === 1),
   );
-  console.log(bombcount);
-  console.log(isPlaying);
+
   //クリア
   const clear = board.every((row, y) =>
     row.every((cell, x) => {
@@ -187,9 +176,9 @@ const Home = () => {
     if (First()) {
       const setUpBombMap = () => {
         newBombMap[y][x] = 1;
-        while (newBombMap.flat().filter((cell) => cell === 1).length < 11) {
-          const nx = Math.floor(Math.random() * 9);
-          const ny = Math.floor(Math.random() * 9);
+        while (newBombMap.flat().filter((cell) => cell === 1).length < bombcount) {
+          const nx = Math.floor(Math.random() * newBombMap.length);
+          const ny = Math.floor(Math.random() * newBombMap.length);
           newBombMap[ny][nx] = 1;
         }
         newBombMap[y][x] = 0;
@@ -202,7 +191,7 @@ const Home = () => {
       newUserInputs[y][x] = 1;
 
       if (board[y][x] === -1 && bombMap[y][x] === 1) {
-        alert('GameOver');
+        // alert('GameOver');
         setGameOver(true);
         openBombs();
         return;
@@ -286,35 +275,31 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.level}>
-        <div
-          className={`${styles.easy} ${difficuly === 1 ? styles.active : ''}`}
-          onClick={choiceEasy}
-        >
-          初級
-        </div>
-        <div
-          className={`${styles.normal} ${difficuly === 2 ? styles.active : ''}`}
-          onClick={choiceNormal}
-        >
-          中級
-        </div>
-        <div
-          className={`${styles.hard} ${difficuly === 3 ? styles.active : ''}`}
-          onClick={choiceHard}
-        >
-          上級
-        </div>
-      </div>
-      <div className={styles.minesweeper}>
-        <div
-          className={`${difficuly === 1 ? styles.boardoutsideflame1 : ''} ${difficuly === 2 ? styles.boardoutsideflame2 : ''} ${difficuly === 3 ? styles.boardoutsideflame3 : ''}`}
-        />
-        <div className={styles.header}>
+      <div className={styles.header}>
+        <div className={styles.level}>
           <div
-            className={`${difficuly === 1 ? styles.topflame1 : ''} ${difficuly === 2 ? styles.topflame2 : ''} ${difficuly === 3 ? styles.topflame3 : ''}`}
-            onClick={() => reset(difficuly)}
-          />
+            className={`${styles.easy} ${difficuly === 1 ? styles.active : ''}`}
+            onClick={choiceEasy}
+          >
+            初級
+          </div>
+          <div
+            className={`${styles.normal} ${difficuly === 2 ? styles.active : ''}`}
+            onClick={choiceNormal}
+          >
+            中級
+          </div>
+          <div
+            className={`${styles.hard} ${difficuly === 3 ? styles.active : ''}`}
+            onClick={choiceHard}
+          >
+            上級
+          </div>
+        </div>
+        <div
+          className={`${difficuly === 1 ? styles.topflame1 : ''} ${difficuly === 2 ? styles.topflame2 : ''} ${difficuly === 3 ? styles.topflame3 : ''}`}
+          onClick={() => reset(difficuly)}
+        >
           <div className={styles.counter}>10</div>
           <button
             className={styles.sampleStyle}
@@ -333,48 +318,52 @@ const Home = () => {
           />
           <div className={styles.timer}>000</div>
         </div>
+      </div>
+      <div
+        className={`${difficuly === 1 ? styles.boardoutsideflame1 : ''} ${difficuly === 2 ? styles.boardoutsideflame2 : ''} ${difficuly === 3 ? styles.boardoutsideflame3 : ''}`}
+      >
         <div
           className={`${difficuly === 1 ? styles.boardflame1 : ''} ${difficuly === 2 ? styles.boardflame2 : ''} ${difficuly === 3 ? styles.boardflame3 : ''}`}
-        />
-        <div
-          className={`${difficuly === 1 ? styles.boardstyle1 : ''} ${difficuly === 2 ? styles.boardstyle2 : ''} ${difficuly === 3 ? styles.boardstyle3 : ''}`}
-        />
-
-        <div className={styles.grid}>
-          {board.map((row, y) =>
-            row.map((cell, x) => (
-              <div
-                key={`${x}-${y}`}
-                className={`${styles.cell} ${cell !== -1 ? styles.opened : ''}`}
-                onClick={() => clickL(x, y)}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  clickR(x, y);
-                }}
-                style={{
-                  backgroundColor: cell !== -1 ? '#919191' : '#c6c6c6',
-                }}
-              >
-                {cell === 9 ? (
+        >
+          <div
+            className={`${difficuly === 1 ? styles.boardstyle1 : ''} ${difficuly === 2 ? styles.boardstyle2 : ''} ${difficuly === 3 ? styles.boardstyle3 : ''}`}
+          >
+            <div className={styles.grid}>
+              {board.map((row, y) =>
+                row.map((cell, x) => (
                   <div
-                    className={styles.sampleStyle}
-                    style={{
-                      backgroundPosition: '-270px',
+                    key={`${x}-${y}`}
+                    className={`${styles.cell} ${cell !== -1 ? styles.opened : ''}`}
+                    onClick={() => clickL(x, y)}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      clickR(x, y);
                     }}
-                  />
-                ) : (
-                  <>
-                    {cellNumber(x, y)}
-                    {cell === 11 ? renderBomb() : null}
-                  </>
-                )}
-              </div>
-            )),
-          )}
+                    style={{
+                      backgroundColor: cell !== -1 ? '#919191' : '#c6c6c6',
+                    }}
+                  >
+                    {cell === 9 ? (
+                      <div
+                        className={styles.sampleStyle}
+                        style={{
+                          backgroundPosition: '-270px',
+                        }}
+                      />
+                    ) : (
+                      <>
+                        {cellNumber(x, y)}
+                        {cell === 11 ? renderBomb() : null}
+                      </>
+                    )}
+                  </div>
+                )),
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
 export default Home;
