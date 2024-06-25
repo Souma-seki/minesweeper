@@ -121,7 +121,7 @@ const Home = () => {
       const [dx, dy] = direction;
       const X = x + dx;
       const Y = y + dy;
-      if (X >= 0 && X < 9 && Y >= 0 && Y < 9 && bombMap[Y][X] === 1) {
+      if (X >= 0 && X < board[0].length && Y >= 0 && Y < board.length && bombMap[Y][X] === 1) {
         count++;
       }
     }
@@ -177,8 +177,8 @@ const Home = () => {
       const setUpBombMap = () => {
         newBombMap[y][x] = 1;
         while (newBombMap.flat().filter((cell) => cell === 1).length < bombcount) {
-          const nx = Math.floor(Math.random() * newBombMap.length);
-          const ny = Math.floor(Math.random() * newBombMap.length);
+          const nx = Math.floor(Math.random() * board[0].length);
+          const ny = Math.floor(Math.random() * board.length);
           newBombMap[ny][nx] = 1;
         }
         newBombMap[y][x] = 0;
