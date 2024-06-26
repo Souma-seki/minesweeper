@@ -5,6 +5,7 @@ const Home = () => {
   //難易度
   const [difficuly, setDifficuly] = useState(1);
 
+  //board作成
   const cleateBoard = (x: number, y: number, fill: number) =>
     [...Array(y)].map(() => [...Array(x)].map(() => fill));
   let board = cleateBoard(9, 9, -1);
@@ -26,6 +27,7 @@ const Home = () => {
   }
 
   const reset = (difficuly: number) => {
+    setTimer(0);
     if (difficuly === 1) {
       bombboard = cleateBoard(9, 9, 0);
       inputboard = cleateBoard(9, 9, 0);
@@ -318,6 +320,7 @@ const Home = () => {
               }
               setBombMap(newBombMap);
               setUserInputs(newUserInputs);
+              clearInterval(timer);
             }}
           />
           <div className={styles.timer}>{timer}</div>
