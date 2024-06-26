@@ -28,6 +28,7 @@ const Home = () => {
 
   const reset = (difficuly: number) => {
     setTimer(0);
+    setBackgroundPosition('-330px');
     if (difficuly === 1) {
       bombboard = cleateBoard(9, 9, 0);
       inputboard = cleateBoard(9, 9, 0);
@@ -82,6 +83,9 @@ const Home = () => {
   const newUserInputs = structuredClone(userInputs);
   const [gameOver, setGameOver] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [backgroundPosition, setBackgroundPosition] = useState('-330px');
+
+  //初回クリックの時
 
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
@@ -96,6 +100,7 @@ const Home = () => {
       if (bombMap[y][x] !== 1) {
         return userInputs[y][x] === 1;
       }
+
       return true;
     }),
   );
@@ -103,6 +108,11 @@ const Home = () => {
   //タイマー
   useEffect(() => {
     if (isFailure || clear) {
+      if (isFailure) {
+        setBackgroundPosition('-390px');
+      } else if (clear) {
+        setBackgroundPosition('-360px');
+      }
       return;
     }
     if (isPlaying) {
@@ -199,7 +209,7 @@ const Home = () => {
     if (First()) {
       const setUpBombMap = () => {
         newBombMap[y][x] = 1;
-        while (newBombMap.flat().filter((cell) => cell === 1).length < bombcount) {
+        while (newBombMap.flat().filter((cell) => cell === 1).length < bombcount + 1) {
           const nx = Math.floor(Math.random() * board[0].length);
           const ny = Math.floor(Math.random() * board.length);
           newBombMap[ny][nx] = 1;
@@ -216,6 +226,7 @@ const Home = () => {
         // alert('GameOver');
         setGameOver(true);
         openBombs();
+        setBackgroundPosition('-390px');
         return;
       }
       const bombCount = bombCounts(x, y);
@@ -309,7 +320,7 @@ const Home = () => {
           <div className={styles.counter}>{bombcount - flagCount()}</div>
           <button
             className={styles.sampleStyle}
-            style={{ backgroundPosition: '-360px' }}
+            style={{ backgroundPosition }}
             onClick={() => {
               for (let y = 0; y < 9; y++) {
                 for (let x = 0; x < 9; x++) {
