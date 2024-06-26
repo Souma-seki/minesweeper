@@ -149,6 +149,19 @@ const Home = () => {
     }
   };
 
+  //旗カウント
+  const flagCount = () => {
+    let count = 0;
+    for (let y = 0; y < bombMap.length; y++) {
+      for (let x = 0; x < bombMap[y].length; x++) {
+        if (board[y][x] === 9) {
+          count++;
+        }
+      }
+    }
+    return count;
+  };
+
   //空白連鎖
   const blank = (x: number, y: number) => {
     let count = 0;
@@ -291,7 +304,7 @@ const Home = () => {
           className={`${difficuly === 1 ? styles.topflame1 : ''} ${difficuly === 2 ? styles.topflame2 : ''} ${difficuly === 3 ? styles.topflame3 : ''}`}
           onClick={() => reset(difficuly)}
         >
-          <div className={styles.counter}>10</div>
+          <div className={styles.counter}>{bombcount - flagCount()}</div>
           <button
             className={styles.sampleStyle}
             style={{ backgroundPosition: '-360px' }}
