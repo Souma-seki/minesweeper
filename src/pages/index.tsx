@@ -10,6 +10,7 @@ const Home = () => {
   //board作成
   const cleateBoard = (x: number, y: number, fill: number) =>
     [...Array(y)].map(() => [...Array(x)].map(() => fill));
+
   let board = cleateBoard(9, 9, -1);
   let bombcount = 0;
   let inputboard = cleateBoard(9, 9, 0);
@@ -345,7 +346,14 @@ const Home = () => {
               <input
                 type="number"
                 value={customRows}
-                onChange={(e) => setCustomRows(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  if (value > 100) {
+                    alert(`縦列の最大数は100です`);
+                  } else {
+                    setCustomRows(value);
+                  }
+                }}
               />
             </label>
             <label>
@@ -353,7 +361,14 @@ const Home = () => {
               <input
                 type="number"
                 value={customCols}
-                onChange={(e) => setCustomCols(Number(e.target.value))}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  if (value > 100) {
+                    alert(`横列の最大数は100です`);
+                  } else {
+                    setCustomCols(value);
+                  }
+                }}
               />
             </label>
             <label>
