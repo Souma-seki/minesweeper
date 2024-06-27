@@ -27,6 +27,7 @@ const Home = () => {
   }
 
   const reset = (difficuly: number) => {
+    setGameOver(false);
     setTimer(0);
     setBackgroundPosition('-330px');
     if (difficuly === 1) {
