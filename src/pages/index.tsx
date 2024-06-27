@@ -7,6 +7,10 @@ const Home = () => {
   const [customRows, setCustomRows] = useState(9);
   const [customCols, setCustomCols] = useState(9);
   const [customBombs, setCustomBombs] = useState(10);
+  // カスタム設定用の一時状態
+  const [tempRows, setTempRows] = useState(customRows);
+  const [tempCols, setTempCols] = useState(customCols);
+  const [tempBombs, setTempBombs] = useState(customBombs);
   //board作成
   const cleateBoard = (x: number, y: number, fill: number) =>
     [...Array(y)].map(() => [...Array(x)].map(() => fill));
@@ -59,7 +63,12 @@ const Home = () => {
         return;
       }
       bombboard = cleateBoard(customCols, customRows, 0);
-      inputboard = cleateBoard(customCols, customRows, 0);
+      // カスタム設定を反映
+      setCustomRows(tempRows);
+      setCustomCols(tempCols);
+      setCustomBombs(tempBombs);
+      bombboard = cleateBoard(tempCols, tempRows, 0);
+      inputboard = cleateBoard(tempCols, tempRows, 0);
       setBombMap(bombboard);
       setUserInputs(inputboard);
     }
@@ -342,31 +351,37 @@ const Home = () => {
         {difficuly === 4 && (
           <div className={styles.customSettings}>
             <label>
-              縦:
+              高さ:
               <input
                 type="number"
-                value={customRows}
+                value={tempRows}
                 onChange={(e) => {
                   const value = Number(e.target.value);
                   if (value > 100) {
                     alert(`縦列の最大数は100です`);
+                  }
+                  if (value % 1 !== 0 || value < 0) {
+                    alert(`自然数を入力してください`);
                   } else {
-                    setCustomRows(value);
+                    setTempRows(value);
                   }
                 }}
               />
             </label>
             <label>
-              横:
+              幅:
               <input
                 type="number"
-                value={customCols}
+                value={tempCols}
                 onChange={(e) => {
                   const value = Number(e.target.value);
                   if (value > 100) {
                     alert(`横列の最大数は100です`);
+                  }
+                  if (value % 1 !== 0 || value < 0) {
+                    alert(`自然数を入力してください`);
                   } else {
-                    setCustomCols(value);
+                    setTempCols(value);
                   }
                 }}
               />
@@ -375,15 +390,18 @@ const Home = () => {
               爆弾数:
               <input
                 type="number"
-                value={customBombs}
+                value={tempBombs}
                 onChange={(e) => {
-                  const maxBombs = customCols * customRows - 1;
+                  const maxBombs = tempCols * tempRows - 1;
                   const value = Number(e.target.value);
                   if (value > maxBombs) {
                     alert(`爆弾の最大数は${maxBombs}です`);
-                    setCustomBombs(maxBombs);
+                    setTempBombs(maxBombs);
+                  }
+                  if (value % 1 !== 0 || value < 0) {
+                    alert(`自然数を入力してください`);
                   } else {
-                    setCustomBombs(value);
+                    setTempBombs(value);
                   }
                 }}
               />
@@ -426,7 +444,9 @@ const Home = () => {
           >
             <div
               className={styles.grid}
-              style={{ gridTemplateColumns: `repeat(${customCols}, 1fr)` }}
+              style={{
+                gridTemplateColumns: difficuly === 4 ? `repeat(${customCols}, 1fr)` : undefined,
+              }}
             >
               {board.map((row, y) =>
                 row.map((cell, x) => (
