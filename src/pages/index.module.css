@@ -19,7 +19,8 @@
 
 .topflame1,
 .topflame2,
-.topflame3 {
+.topflame3,
+.topflame4 {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -49,20 +50,23 @@
 
 .boardoutsideflame1,
 .boardoutsideflame2,
-.boardoutsideflame3 {
+.boardoutsideflame3,
+.boardoutsideflame4 {
   display: flex;
   justify-content: center;
 }
 
 .boardflame1,
 .boardflame2,
-.boardflame3 {
+.boardflame3,
+.boardflame4 {
   border: 6px solid gray;
 }
 
 .boardstyle1,
 .boardstyle2,
-.boardstyle3 {
+.boardstyle3,
+.boardstyle4 {
   display: flex;
   flex-wrap: wrap;
 }
@@ -84,6 +88,10 @@
 
 .boardstyle3 .grid {
   grid-template-columns: repeat(30, 1fr);
+}
+
+.boardstyle4 .grid {
+  grid-template-columns: repeat(auto-fill, 30px); /* 自動調整列 */
 }
 
 .cell {

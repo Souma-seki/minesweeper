@@ -1,366 +1,7 @@
-import { useState } from 'react';
-// import React, { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './index.module.css';
 
-const Home = () => {
-  // const [count, setCount] = useState<number>(0);
-  // const SevenSegmentDisplay: React.FC<{ count: number }> = ({ count }) => {
-  //   const formattedCount = String(count).padStart(3, '0');
-
-  //   return (
-  //     <div className={styles.sevensegment}>
-  //       {formattedCount.split('').map((digit, index) => (
-  //         <span key={index} className={styles.digit}>
-  //           {digit}
-  //         </span>
-  //       ))}
-  //     </div>
-  //   );
-  // };
-
-  const [difficulty, setDifficulty] = useState<'Easy' | 'Normal' | 'Hard'>('Easy');
-
-  const generateboard = (x: number, y: number, fill: number) =>
-    [...Array(y)].map(() => [...Array(x)].map(() => fill));
-  let board = generateboard(9, 9, -1);
-  let bombcount = 10;
-  let inputboard = generateboard(9, 9, 0);
-  let bombboard = generateboard(9, 9, 0);
-  if (difficulty === 'Easy') {
-    board = generateboard(9, 9, -1);
-    bombcount = 10;
-  } else if (difficulty === 'Normal') {
-    board = generateboard(16, 16, -1);
-    bombcount = 40;
-  } else {
-    board = generateboard(30, 16, -1);
-    bombcount = 99;
-  }
-  const [bombMap, setBombMap] = useState(bombboard);
-  const [userIn, setUserIn] = useState(inputboard); ////
-  const difficultResetgame = (difficulty: 'Easy' | 'Normal' | 'Hard') => {
-    console.log(difficulty);
-    if (difficulty === 'Easy') {
-      bombboard = generateboard(9, 9, 0);
-      inputboard = generateboard(9, 9, 0);
-      setCount(0);
-      setBombMap(bombboard);
-      setUserIn(inputboard);
-    } else if (difficulty === 'Normal') {
-      bombboard = generateboard(16, 16, 0);
-      inputboard = generateboard(16, 16, 0);
-      setCount(0);
-      setBombMap(bombboard);
-      setUserIn(inputboard);
-    } else {
-      bombboard = generateboard(30, 16, 0);
-      inputboard = generateboard(30, 16, 0);
-      setCount(0);
-      setBombMap(bombboard);
-      setUserIn(inputboard);
-    }
-  };
-  ////
-  const updateboard = () => {
-    bombMap.forEach((row, i) => {
-      row.forEach((cell, j) => {
-        if (bombMap[i][j] === 1 && userIn[i][j] === 1) {
-          board[i][j] = 11;
-        } else if (userIn[i][j] === 1) {
-          // arounder(i, j);
-        } else if (userIn[i][j] === 2) {
-          board[i][j] = 9;
-        } else if (userIn[i][j] === 3) {
-          board[i][j] = 10;
-        } else if (isClear && bombMap[i][j] === 1) {
-          board[i][j] = 10;
-        }
-      });
-    });
-  };
-  ////
-  const isPlaying = userIn.some((row) => row.some((input) => input !== 0));
-  const isFailure = userIn.some((row, y) =>
-    row.some((input, x) => input === 1 && bombMap[y][x] === 1),
-  );
-  const isClear = board.every((row, y) =>
-    row.every((cell, x) => {
-      if (bombMap[y][x] !== 1) {
-        return userIn[y][x] === 1;
-      }
-      return true;
-    }),
-  );
-  ////
-
-  useEffect(() => {
-    if (isClear || isFailure) {
-      return;
-    }
-    if (isPlaying) {
-      const interval = setInterval(() => {
-        setCount((count) => count + 1);
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [isClear, isFailure, isPlaying]);
-
-  const clickHandler = (x: number, y: number) => {
-    if (isFailure || isClear) return;
-
-    const Num = (col: number) => bombMap.flat().filter((c) => c === col).length;
-    let bombcountnow = 0;
-
-    if (Num(1) === 0) {
-      const newBombMap = structuredClone(bombMap);
-      while (bombcountnow < bombcount) {
-        const randomY = Math.floor(Math.random() * newBombMap.length);
-        const randomX = Math.floor(Math.random() * newBombMap[0].length);
-        if (newBombMap[randomY][randomX] !== 1 && !(y === randomY && x === randomX)) {
-          newBombMap[randomY][randomX] = 1;
-          bombcountnow++;
-        }
-      }
-      setBombMap(newBombMap);
-    }
-
-    const newUserIn = structuredClone(userIn);
-
-    if (board[y][x] === -1 && userIn[y][x] === 0) {
-      newUserIn[y][x] = 1;
-      setUserIn(newUserIn);
-    }
-    ////
-
-    if (board[y][x] === -1 && bombMap[y][x] === 1) {
-      isFailure;
-    }
-  };
-
-  // const arounder = (i: number, j: number) => {
-  //   const directions = [
-  //     [-1, 0],
-  //     [-1, -1],
-  //     [0, -1],
-  //     [1, -1],
-  //     [1, 0],
-  //     [1, 1],
-  //     [0, 1],
-  //     [-1, 1],
-  //   ];
-
-  //   let aroundcount = 0;
-
-  //   for (const direct of directions) {
-  //     const [I, J] = direct;
-  //     if (j + J >= 0 && j + J < board[0].length && i + I >= 0 && i + I < board.length) {
-  //       if (bombMap[i + I] !== undefined && bombMap[i + I][j + J] !== undefined) {
-  //         if (bombMap[i + I][j + J] === 1) {
-  //           aroundcount++;
-  //         }
-  //         board[i][j] = aroundcount;
-  //       }
-  //     }
-  //   }
-
-  //   board[i][j] = aroundcount;
-
-  //   if (aroundcount === 0) {
-  //     userIn[i][j] = 1;
-  //     for (const direct of directions) {
-  //       const [I, J] = direct;
-  //       if (j + J >= 0 && j + J < board[0].length && i + I >= 0 && i + I < board.length) {
-  //         if (bombMap[i + I][j + J] === 1 && (userIn[i][j] === 2 || userIn[i][j] === 3)) {
-  //           userIn[i][j] = 0;
-  //         }
-  //         if (
-  //           userIn[i + I][j + J] === 0 ||
-  //           userIn[i + I][j + J] === 2 ||
-  //           userIn[i + I][j + J] === 3
-  //         ) {
-  //           if (userIn[i + I][j + J] === 2 || userIn[i + I][j + J] === 3) {
-  //             userIn[i + I][j + J] = 0;
-  //           }//
-  //           if (board[i + I][j + J] === -1) {
-  //             board[i + I][j + J] = aroundcount + 1;
-  //             userIn[i + I][j + J] = 1;
-
-  //             arounder(i + I, j + J);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // };
-
-  const RightClick = (event: React.MouseEvent, x: number, y: number) => {
-    event.preventDefault();
-
-    if (isFailure || isClear) return; //
-
-    const newUserIn = structuredClone(userIn);
-
-    if (board[y][x] === -1 && newUserIn[y][x] === 0) {
-      newUserIn[y][x] = 3;
-      setUserIn(newUserIn);
-    } else if (newUserIn[y][x] === 3) {
-      newUserIn[y][x] = 2;
-      setUserIn(newUserIn);
-    } else if (newUserIn[y][x] === 2) {
-      newUserIn[y][x] = 0;
-      setUserIn(newUserIn);
-    }
-  };
-
-  const NumBoard = (col: number) => board.flat().filter((c) => c === col).length;
-
-  updateboard();
-
-  const handleEasyClick = () => {
-    setDifficulty('Easy');
-    difficultResetgame('Easy');
-  };
-  const handleNormalClick = () => {
-    setDifficulty('Normal');
-    difficultResetgame('Normal');
-  };
-
-  const handleHardClick = () => {
-    setDifficulty('Hard');
-    difficultResetgame('Hard');
-  };
-
-  console.log('board');
-  console.table(board);
-  console.log('bombMap');
-  console.table(bombMap);
-  console.log('userIn');
-  console.table(userIn);
-  console.log('bombboard');
-  return (
-    <div className={styles.container}>
-      <div className={styles.difficulty}>
-        <a
-          className={`${styles.levelLink} ${difficulty === 'Easy' ? styles.active : ''}`}
-          onClick={handleEasyClick}
-        >
-          初級
-        </a>
-        <a
-          className={`${styles.levelLink} ${difficulty === 'Normal' ? styles.active : ''}`}
-          onClick={handleNormalClick}
-        >
-          中級
-        </a>
-        <a
-          className={`${styles.levelLink} ${difficulty === 'Hard' ? styles.active : ''}`}
-          onClick={handleHardClick}
-        >
-          上級
-        </a>
-      </div>
-      <div className={styles.minesweepercontainer}>
-        <div
-          className={styles.gameoverboardflame}
-          style={{ display: isClear || isFailure ? '' : 'none' }}
-        >
-          <div className={styles.gameoverboard}>
-            <span className={styles.text} style={{ display: isClear ? '' : 'none' }}>
-              回避成功
-            </span>
-            <span className={styles.text} style={{ display: isClear ? 'none' : '' }}>
-              回避失敗
-            </span>
-          </div>
-        </div>
-        <div
-          className={`${difficulty === 'Easy' ? styles.boardoutsideflame1 : ''} ${difficulty === 'Normal' ? styles.boardoutsideflame2 : ''} ${difficulty === 'Hard' ? styles.boardoutsideflame3 : ''}`}
-        >
-          <div className={styles.boardcontainer}>
-            <div
-              className={`${difficulty === 'Easy' ? styles.topflame1 : ''} ${difficulty === 'Normal' ? styles.topflame2 : ''} ${difficulty === 'Hard' ? styles.topflame3 : ''}`}
-              onClick={() => difficultResetgame(difficulty)}
-            >
-              <div className={styles.flagflame}>
-                <div className={styles.flagboard}>
-                  <span className={styles.digit}>{bombcount - NumBoard(10)}</span>
-                </div>
-              </div>
-              <div
-                className={`${difficulty === 'Easy' ? styles.resetoutflame1 : ''} ${difficulty === 'Normal' ? styles.resetoutflame2 : ''} ${difficulty === 'Hard' ? styles.resetoutflame3 : ''}`}
-              >
-                <div className={styles.resetflame}>
-                  <div
-                    className={styles.reset}
-                    style={{
-                      backgroundPosition: isClear
-                        ? `-360px 0px`
-                        : isFailure
-                          ? `-390px 0px`
-                          : isPlaying
-                            ? `-330px 0px`
-                            : `-330px 0px`,
-                    }}
-                  />
-                </div>
-              </div>
-              <div className={styles.timerflame}>
-                <div className={styles.timerboard}>
-                  <SevenSegmentDisplay count={count} />
-                </div>
-              </div>
-            </div>
-            <div
-              className={`${difficulty === 'Easy' ? styles.boardflame1 : ''} ${difficulty === 'Normal' ? styles.boardflame2 : ''} ${difficulty === 'Hard' ? styles.boardflame3 : ''}`}
-            >
-              <div
-                className={`${difficulty === 'Easy' ? styles.boardstyle1 : ''} ${difficulty === 'Normal' ? styles.boardstyle2 : ''} ${difficulty === 'Hard' ? styles.boardstyle3 : ''}`}
-              >
-                {board.map((row, y) =>
-                  row.map((cell, x) => {
-                    if (isFailure && bombMap[y][x] === 1) {
-                      return (
-                        <div
-                          className={`${styles.cellstyle} ${styles.samplestyle} `}
-                          key={`${x}-${y}`}
-                          onClick={() => clickHandler(x, y)}
-                          onContextMenu={(event) => RightClick(event, x, y)}
-                          style={{
-                            backgroundPosition: `-300px 0px`,
-                            backgroundColor: bombMap[y][x] === 1 && userIn[y][x] === 1 ? `red` : '',
-                          }}
-                        />
-                      );
-                    } else {
-                      return (
-                        <div
-                          className={`${styles.cellstyle} ${styles.samplestyle} ${cell === -1 ? styles.stonestyle : cell === 9 || cell === 10 ? `${styles.stonestyle} ${styles.flag} ${styles.question}` : ''}`}
-                          key={`${x}-${y}`}
-                          onClick={() => clickHandler(x, y)}
-                          onContextMenu={(event) => RightClick(event, x, y)}
-                          style={{
-                            backgroundPosition:
-                              cell === 9 || cell === 10
-                                ? `${-22.9 * (cell - 1)}px 0px`
-                                : `${-30 * (cell - 1)}px 0px`,
-                          }}
-                        />
-                      );
-                    }
-                  }),
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-export default Home;
-import { useState } from 'react';
-import styles from './index.module.css';
+type difficultyType = 'easy' | 'middle' | 'hard' | 'custom';
 
 const Home = () => {
   const initialRows = 9;
@@ -369,11 +10,37 @@ const Home = () => {
   const [rows, setRows] = useState(initialRows);
   const [cols, setCols] = useState(initialCols);
   const [bomb, setbombCount] = useState(bombCount);
-  const [difficulty, setDifficulty] = useState('easy');
+  const [temprows, settempRows] = useState(initialRows);
+  const [tempcols, settempCols] = useState(initialCols);
+  const [tempbomb, settempbombCount] = useState(bombCount);
+  const [difficulty, setDifficulty] = useState<difficultyType>('easy');
+  const [remainingBombs, setRemainingBombs] = useState(bombCount);
 
   // ボードを生成する関数
   const createBoard = (rows: number, cols: number) => {
     return [...Array(rows)].map(() => Array(cols).fill(0));
+  };
+
+  //リセットボタンの関数
+  const reset = () => {
+    for (let d = 0; d < cols; d++) {
+      for (let c = 0; c < rows; c++) {
+        newBombMap[c][d] = 0;
+        newUserInputs[c][d] = 0;
+        board[c][d] = -1;
+      }
+    }
+
+    const firstbomb =
+      difficulty === 'easy' ? 10 : difficulty === 'middle' ? 40 : difficulty === 'hard' ? 99 : 0;
+
+    setBombMap(createBoard(rows, cols));
+    setUserInputs(createBoard(rows, cols));
+    setRemainingBombs(firstbomb);
+    setRemainingBombs(bomb);
+
+    setCount(0);
+    stopTimer();
   };
 
   // 初期状態のボードと爆弾マップ
@@ -396,6 +63,41 @@ const Home = () => {
     [-1, 1], //左下
     [-1, -1], //左上
   ];
+  //タイマー
+  const [count, setCount] = useState(0);
+  const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
+
+  //タイマーの開始と停止関数
+  const startTimer = () => {
+    if (!timerId) {
+      const id = setInterval(() => {
+        setCount((prevCount) => {
+          if (prevCount >= 999) {
+            clearInterval(id);
+            setTimerId(null);
+            return 999;
+          }
+          return prevCount + 1;
+        });
+      }, 1000);
+      setTimerId(id);
+    }
+  };
+  const stopTimer = () => {
+    if (timerId) {
+      clearInterval(timerId);
+      setTimerId(null);
+    }
+  };
+
+  //タイマーのクリーンアップ
+  useEffect(() => {
+    return () => {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+    };
+  }, [timerId]);
 
   //ランダム取得
   function getRandomInt(min: number, max: number) {
@@ -406,23 +108,38 @@ const Home = () => {
   const newUserInputs = structuredClone(userInputs);
 
   //右クリック
-  const clickR = (x: number, y: number) => {
+  const clickR = (x: number, y: number, event: React.MouseEvent) => {
     //デフォルトの右クリックのメニューが出ないようにする
-    document.getElementsByTagName('html')[0].oncontextmenu = () => false;
+    event.preventDefault();
     //右クリックでuserInputの0と2を入れ替える
     if (newUserInputs[y][x] === 1) return;
-    newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
+    if (isFailure(userInputs, bombMap)) return;
+    if (clearfilter(0) === remainingBombs) return;
+    if (isClear === true) return;
+    if (newUserInputs[y][x] === 2) {
+      newUserInputs[y][x] = 0;
+      startTimer();
+      setRemainingBombs(remainingBombs + 1); // 旗を外した場合は+1
+    } else {
+      startTimer();
+      newUserInputs[y][x] = 2;
+      setRemainingBombs(remainingBombs - 1); // 旗を置いた場合は-1
+    }
     setUserInputs(newUserInputs);
   };
 
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     if (userInputs[y][x] === 0) {
+      if (isFailure(userInputs, bombMap)) return;
+      if (clearfilter(0) === remainingBombs) return;
       newUserInputs[y][x] = 1;
+      startTimer(); // タイマーを開始
 
       // 初回クリック時の爆弾設置
       const inputfilter = (col: number) => newBombMap.flat().filter((v) => v === col).length;
       if (inputfilter(1) === 0) {
+        if (userInputs[y][x] === 2) return;
         // まだ爆弾が設置されていない場合
         while (inputfilter(1) < bomb) {
           // 爆弾が10個になるまで設置
@@ -436,11 +153,22 @@ const Home = () => {
           }
         }
       }
-      console.log(inputfilter(1));
+      // console.log(inputfilter(1));
     }
+    if (bombMap[y][x] === 1) {
+      // クリックしたセルが爆弾の場合
+      setUserInputs(newUserInputs);
+      setBombMap(newBombMap);
+      return;
+    }
+    if (isFailure(userInputs, bombMap)) return;
+    if (clearfilter(0) === remainingBombs) return;
+    if (isClear === true) return;
 
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
+    if (userInputs[y][x] === 2) return;
+    blank(x, y);
   };
 
   //空白連鎖
@@ -460,13 +188,30 @@ const Home = () => {
       for (const [dx, dy] of directions) {
         const nx = x + dx;
         const ny = y + dy;
+        // if (
+        //   newBombMap[ny] !== undefined &&
+        //   newBombMap[ny][nx] !== undefined &&
+        //   newBombMap[ny][nx] === 1
+        // )
+        //   return;
         if (
           newUserInputs[ny] !== undefined &&
           newUserInputs[ny][nx] !== undefined &&
-          newUserInputs[ny][nx] === 0
+          newUserInputs[ny][nx] === 0 &&
+          bombMap[ny][nx] !== 1
         ) {
           newUserInputs[ny][nx] = 1;
           blank(nx, ny);
+        }
+        if (
+          newUserInputs[ny] !== undefined &&
+          newUserInputs[ny][nx] !== undefined &&
+          newUserInputs[ny][nx] === 2 &&
+          bombMap[ny][nx] !== 1
+        ) {
+          newUserInputs[ny][nx] = 1;
+          blank(nx, ny);
+          setRemainingBombs(bomb);
         }
       }
     }
@@ -476,7 +221,7 @@ const Home = () => {
   const changeBoardSize = (
     newRows: number,
     newCols: number,
-    difficulty: string,
+    difficulty: difficultyType,
     newBomb: number,
   ) => {
     setRows(newRows);
@@ -485,37 +230,79 @@ const Home = () => {
     setDifficulty(difficulty);
     setUserInputs(createBoard(newRows, newCols));
     setBombMap(createBoard(newRows, newCols));
+    setRemainingBombs(newBomb);
   };
 
   //旗置く
   for (let d = 0; d < cols; d++) {
     for (let c = 0; c < rows; c++) {
-      if (userInputs[c][d] === 2) {
+      if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 2) {
         board[c][d] = 10;
       }
-      if (userInputs[c][d] === 0) {
+      if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 0) {
         board[c][d] = -1;
       }
     }
   }
 
   //爆弾踏んだ時に爆弾表示
+  let nico = 0;
   if (isFailure(userInputs, bombMap)) {
     for (let d = 0; d < cols; d++) {
       for (let c = 0; c < rows; c++) {
-        if (bombMap[c][d] === 1) {
-          board[c][d] = 11;
+        if (bombMap[c]?.[d] !== undefined && bombMap[c][d] === 1) {
+          if (userInputs[c][d] !== 1) {
+            board[c][d] = 11;
+          } else {
+            board[c][d] = 25;
+          }
         }
       }
     }
+    stopTimer(); // タイマーを停止
+    nico = 1;
   }
 
+  //クリア
+  const isClear = board.every((row, y) =>
+    row.every((cell, x) => {
+      if (bombMap[y][x] !== 1) {
+        return userInputs[y][x] === 1;
+      }
+      return true;
+    }),
+  );
+  if (isClear === true) {
+    for (let d = 0; d < cols; d++) {
+      for (let c = 0; c < rows; c++) {
+        if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 0) {
+          board[c][d] = 10;
+        }
+      }
+    }
+    stopTimer();
+    nico = 2;
+  }
+  const clearfilter = (col: number) => userInputs.flat().filter((v) => v === col).length;
+  // if (isPlaying) {
+  //   if (clearfilter(0) === remainingBombs) {
+  //     for (let d = 0; d < cols; d++) {
+  //       for (let c = 0; c < rows; c++) {
+  //         if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 0) {
+  //           board[c][d] = 10;
+  //         }
+  //       }
+  //     }
+  //     stopTimer();
+  //     nico = 2;
+  //   }
+  // }
   // 爆弾チェックと周囲の爆弾数を更新
   for (let d = 0; d < cols; d++) {
     for (let c = 0; c < rows; c++) {
-      if (userInputs[c][d] === 1) {
-        if (bombMap[c][d] === 1) {
-          board[c][d] = 11; // 爆弾があるマス
+      if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 1) {
+        if (bombMap[c]?.[d] !== undefined && bombMap[c][d] === 1) {
+          board[c][d] = 25; // 爆弾があるマス
         } else {
           blank(d, c); // 周囲の爆弾数を数えて、必要に応じて連鎖的に開ける
         }
@@ -523,60 +310,147 @@ const Home = () => {
     }
   }
 
-  console.table(board);
-  console.table(userInputs);
+  //inputの値を仮の関数にぶち込む
+  const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    settempRows(Number(e.target.value));
+  };
+  const handleColsChange = (f: React.ChangeEvent<HTMLInputElement>) => {
+    settempCols(Number(f.target.value));
+  };
+  const handleBombChange = (g: React.ChangeEvent<HTMLInputElement>) => {
+    settempbombCount(Number(g.target.value));
+  };
+
+  const applyClick = () => {
+    if (tempcols * temprows <= tempbomb) {
+      alert('爆弾数がマス以上の場合は適用できません');
+      return;
+    }
+    if (temprows === null) return;
+    if (tempcols === null) return;
+    if (tempbomb < 0) {
+      alert('爆弾数がマイナスの場合は適用できません');
+      return;
+    }
+    if (tempcols % 1 !== 0) {
+      alert('少数は適用できません');
+      return;
+    }
+    if (temprows % 1 !== 0) {
+      alert('少数は適用できません');
+      return;
+    }
+    changeBoardSize(tempcols, temprows, 'custom', tempbomb);
+    setCount(0);
+    stopTimer();
+  };
   console.table(bombMap);
   return (
     <div className={styles.container}>
       <div className={styles.allall}>
         {/* 上の部分 */}
         <div className={styles.head}>
-          <div className={styles.easy} onClick={() => changeBoardSize(9, 9, 'easy', 10)}>
+          <div
+            className={styles.easy}
+            onClick={() => {
+              changeBoardSize(9, 9, 'easy', 10);
+              setCount(0);
+              stopTimer();
+            }}
+          >
             初級
           </div>
-          <div className={styles.middle} onClick={() => changeBoardSize(16, 16, 'middle', 40)}>
+          <div
+            className={styles.middle}
+            onClick={() => {
+              changeBoardSize(16, 16, 'middle', 40);
+              setCount(0);
+              stopTimer();
+            }}
+          >
             中級
           </div>
-          <div className={styles.hard} onClick={() => changeBoardSize(16, 30, 'hard', 99)}>
+          <div
+            className={styles.hard}
+            onClick={() => {
+              changeBoardSize(16, 30, 'hard', 99);
+              setCount(0);
+              stopTimer();
+            }}
+          >
             上級
           </div>
-          <div className={styles.custom}>カスタム</div>
+          <div
+            className={styles.custom}
+            onClick={() => {
+              changeBoardSize(9, 9, 'custom', 10);
+              setCount(0);
+              stopTimer();
+            }}
+          >
+            カスタム
+          </div>
         </div>
+        {difficulty === 'custom' && (
+          <div className={styles.customApply}>
+            <label>幅：</label>
+            <input type="number" onChange={handleRowsChange} />
+            <label>高さ：</label>
+            <input type="number" onChange={handleColsChange} />
+            <label>爆弾数：</label>
+            <input type="number" onChange={handleBombChange} />
+            <button onClick={() => applyClick()}>適用</button>
+          </div>
+        )}
 
         {/* 灰色全体 */}
         <div className={styles.allbackground}>
           <div className={styles.boardstyle}>
             {/* タイマー・ニコちゃん・旗 */}
             <div className={styles.gamehead}>
-              <div className={styles.flag}>999</div>
+              <div className={styles.flag} id="remainingBombs">
+                {remainingBombs}
+              </div>
               <button
                 className={styles.reset}
-                style={{ backgroundPosition: `30px 0` }}
-                onClick={() => {
-                  for (let d = 0; d < cols; d++) {
-                    for (let c = 0; c < rows; c++) {
-                      newBombMap[c][d] = 0;
-                      newUserInputs[c][d] = 0;
-                      board[c][d] = -1;
-                    }
-                  }
-                  setBombMap(createBoard(rows, cols));
-                  setUserInputs(createBoard(rows, cols));
+                onClick={() => reset()}
+                style={{
+                  backgroundPosition: nico === 0 ? `90px 0` : nico === 1 ? `30px 0` : `60px 0`,
                 }}
               />
-              <div className={styles.timer}>999</div>
+              <div className={styles.timer}>{count}</div>
             </div>
             {/* マップ */}
-            <div className={`${styles.backgroundmap} ${styles[difficulty]}`}>
+            <div
+              className={`${styles.backgroundmap} ${styles[difficulty]}`}
+              style={
+                difficulty === 'custom'
+                  ? { gridTemplateColumns: `repeat(${cols}, 40px)` }
+                  : undefined
+              }
+            >
               {board.map((row, y) =>
                 row.map((bomb, x) => (
                   <div
                     className={styles.cellStyle}
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
-                    onContextMenu={() => clickR(x, y)}
+                    onContextMenu={(event) => clickR(x, y, event)}
                     style={{
-                      backgroundColor: bomb === -1 ? '#e4e4e4' : bomb === 10 ? '#e4e4e4' : '#bbb',
+                      backgroundColor:
+                        bomb === -1
+                          ? '#c6c6c6'
+                          : bomb === 10
+                            ? '#c6c6c6'
+                            : bomb === 25
+                              ? '#f00'
+                              : '#c6c6c6',
+                      borderColor:
+                        bomb === -1
+                          ? '#fff #7b7b7b #7b7b7b #fff'
+                          : bomb === 10
+                            ? '#fff #7b7b7b #7b7b7b #fff'
+                            : '#7b7b7b #fff #fff #7b7b7b',
                     }}
                   >
                     {bomb !== -1 && bomb !== 0 && (
@@ -615,3 +489,12 @@ export default Home;
 // 9 -> 石とはてな
 // 10 -> 石と旗
 // 11 -> ボムセル
+
+//旗置いてもタイマー@
+//はたおいたばくだんもあかくなる@
+//適用で初期値@
+//縦と横逆@
+//小数点@
+//ばくだんがまいなすになる@
+//適用でタイマーリセットしない@
+//

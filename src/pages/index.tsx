@@ -4,7 +4,9 @@ import styles from './index.module.css';
 const Home = () => {
   //難易度
   const [difficuly, setDifficuly] = useState(1);
-
+  const [customRows, setCustomRows] = useState(9);
+  const [customCols, setCustomCols] = useState(9);
+  const [customBombs, setCustomBombs] = useState(10);
   //board作成
   const cleateBoard = (x: number, y: number, fill: number) =>
     [...Array(y)].map(() => [...Array(x)].map(() => fill));
@@ -25,6 +27,10 @@ const Home = () => {
     board = cleateBoard(30, 16, -1);
     bombcount = 99;
   }
+  if (difficuly === 4) {
+    board = cleateBoard(customCols, customRows, -1);
+    bombcount = customBombs;
+  }
 
   const reset = (difficuly: number) => {
     setGameOver(false);
@@ -43,6 +49,16 @@ const Home = () => {
     } else if (difficuly === 3) {
       bombboard = cleateBoard(30, 16, 0);
       inputboard = cleateBoard(30, 16, 0);
+      setBombMap(bombboard);
+      setUserInputs(inputboard);
+    } else if (difficuly === 4) {
+      const maxBombs = customCols * customRows - 1;
+      if (customBombs > maxBombs) {
+        alert(`爆弾の最大数は${maxBombs}です`);
+        return;
+      }
+      bombboard = cleateBoard(customCols, customRows, 0);
+      inputboard = cleateBoard(customCols, customRows, 0);
       setBombMap(bombboard);
       setUserInputs(inputboard);
     }
@@ -77,6 +93,10 @@ const Home = () => {
     setDifficuly(3);
     reset(3);
   };
+  const choiceCustom = () => {
+    setDifficuly(4);
+    reset(4);
+  };
 
   const [userInputs, setUserInputs] = useState(inputboard);
   const [bombMap, setBombMap] = useState(bombboard);
@@ -85,8 +105,6 @@ const Home = () => {
   const [gameOver, setGameOver] = useState(false);
   const [timer, setTimer] = useState(0);
   const [backgroundPosition, setBackgroundPosition] = useState('-330px');
-
-  //初回クリックの時
 
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
@@ -224,7 +242,6 @@ const Home = () => {
     if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
       newUserInputs[y][x] = 1;
       if (board[y][x] === -1 && bombMap[y][x] === 1) {
-        // alert('GameOver');
         setGameOver(true);
         openBombs();
         setBackgroundPosition('-390px');
@@ -292,7 +309,7 @@ const Home = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.minesweeper}>
       <div className={styles.header}>
         <div className={styles.level}>
           <div
@@ -313,9 +330,53 @@ const Home = () => {
           >
             上級
           </div>
+          <div
+            className={`${styles.custom} ${difficuly === 4 ? styles.active : ''}`}
+            onClick={choiceCustom}
+          >
+            カスタム
+          </div>
         </div>
+        {difficuly === 4 && (
+          <div className={styles.customSettings}>
+            <label>
+              縦:
+              <input
+                type="number"
+                value={customRows}
+                onChange={(e) => setCustomRows(Number(e.target.value))}
+              />
+            </label>
+            <label>
+              横:
+              <input
+                type="number"
+                value={customCols}
+                onChange={(e) => setCustomCols(Number(e.target.value))}
+              />
+            </label>
+            <label>
+              爆弾数:
+              <input
+                type="number"
+                value={customBombs}
+                onChange={(e) => {
+                  const maxBombs = customCols * customRows - 1;
+                  const value = Number(e.target.value);
+                  if (value > maxBombs) {
+                    alert(`爆弾の最大数は${maxBombs}です`);
+                    setCustomBombs(maxBombs);
+                  } else {
+                    setCustomBombs(value);
+                  }
+                }}
+              />
+            </label>
+            <button onClick={() => reset(4)}>設定して開始</button>
+          </div>
+        )}
         <div
-          className={`${difficuly === 1 ? styles.topflame1 : ''} ${difficuly === 2 ? styles.topflame2 : ''} ${difficuly === 3 ? styles.topflame3 : ''}`}
+          className={`${difficuly === 1 ? styles.topflame1 : ''} ${difficuly === 2 ? styles.topflame2 : ''} ${difficuly === 3 ? styles.topflame3 : ''} ${difficuly === 4 ? styles.topflame4 : ''}`}
           onClick={() => reset(difficuly)}
         >
           <div className={styles.counter}>{bombcount - flagCount()}</div>
@@ -323,8 +384,8 @@ const Home = () => {
             className={styles.sampleStyle}
             style={{ backgroundPosition }}
             onClick={() => {
-              for (let y = 0; y < 9; y++) {
-                for (let x = 0; x < 9; x++) {
+              for (let y = 0; y < board.length; y++) {
+                for (let x = 0; x < board[y].length; x++) {
                   newBombMap[y][x] = 0;
                   newUserInputs[y][x] = 0;
                   board[y][x] = -1;
@@ -339,13 +400,13 @@ const Home = () => {
         </div>
       </div>
       <div
-        className={`${difficuly === 1 ? styles.boardoutsideflame1 : ''} ${difficuly === 2 ? styles.boardoutsideflame2 : ''} ${difficuly === 3 ? styles.boardoutsideflame3 : ''}`}
+        className={`${difficuly === 1 ? styles.boardoutsideflame1 : ''} ${difficuly === 2 ? styles.boardoutsideflame2 : ''} ${difficuly === 3 ? styles.boardoutsideflame3 : ''} ${difficuly === 4 ? styles.boardoutsideflame4 : ''}`}
       >
         <div
-          className={`${difficuly === 1 ? styles.boardflame1 : ''} ${difficuly === 2 ? styles.boardflame2 : ''} ${difficuly === 3 ? styles.boardflame3 : ''}`}
+          className={`${difficuly === 1 ? styles.boardflame1 : ''} ${difficuly === 2 ? styles.boardflame2 : ''} ${difficuly === 3 ? styles.boardflame3 : ''} ${difficuly === 4 ? styles.boardflame4 : ''}`}
         >
           <div
-            className={`${difficuly === 1 ? styles.boardstyle1 : ''} ${difficuly === 2 ? styles.boardstyle2 : ''} ${difficuly === 3 ? styles.boardstyle3 : ''}`}
+            className={`${difficuly === 1 ? styles.boardstyle1 : ''} ${difficuly === 2 ? styles.boardstyle2 : ''} ${difficuly === 3 ? styles.boardstyle3 : ''} ${difficuly === 4 ? styles.boardstyle4 : ''}`}
           >
             <div className={styles.grid}>
               {board.map((row, y) =>
