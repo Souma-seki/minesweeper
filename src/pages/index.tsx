@@ -242,6 +242,7 @@ const Home = () => {
     if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
       newUserInputs[y][x] = 1;
       if (board[y][x] === -1 && bombMap[y][x] === 1) {
+        // alert('GameOver');
         setGameOver(true);
         openBombs();
         setBackgroundPosition('-390px');
@@ -408,7 +409,10 @@ const Home = () => {
           <div
             className={`${difficuly === 1 ? styles.boardstyle1 : ''} ${difficuly === 2 ? styles.boardstyle2 : ''} ${difficuly === 3 ? styles.boardstyle3 : ''} ${difficuly === 4 ? styles.boardstyle4 : ''}`}
           >
-            <div className={styles.grid}>
+            <div
+              className={styles.grid}
+              style={{ gridTemplateColumns: `repeat(${customCols}, 1fr)` }}
+            >
               {board.map((row, y) =>
                 row.map((cell, x) => (
                   <div
