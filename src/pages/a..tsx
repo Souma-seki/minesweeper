@@ -323,23 +323,16 @@ const Home = () => {
 
   const applyClick = () => {
     if (tempcols * temprows <= tempbomb) {
-      alert('爆弾数がマス以上の場合は適用できません');
+      alert('爆弾数をマスの数以上にすることはできません');
       return;
     }
     if (temprows === null) return;
     if (tempcols === null) return;
-    if (tempbomb < 0) {
-      alert('爆弾数がマイナスの場合は適用できません');
+    if (tempbomb < 0 || tempcols % 1 !== 0 || temprows % 1 !== 0) {
+      alert('自然数で入力して下さい');
       return;
     }
-    if (tempcols % 1 !== 0) {
-      alert('少数は適用できません');
-      return;
-    }
-    if (temprows % 1 !== 0) {
-      alert('少数は適用できません');
-      return;
-    }
+
     changeBoardSize(tempcols, temprows, 'custom', tempbomb);
     setCount(0);
     stopTimer();

@@ -57,21 +57,35 @@ const Home = () => {
       setBombMap(bombboard);
       setUserInputs(inputboard);
     } else if (difficuly === 4) {
-      const maxBombs = tempCols * tempRows - 1;
-      if (customBombs > maxBombs) {
-        alert(`爆弾の最大数は${maxBombs}です`);
-        setTempBombs(maxBombs);
+      if (tempCols * tempRows <= tempBombs) {
+        alert('爆弾数がマス以上の場合は適用できません');
         return;
       }
-      bombboard = cleateBoard(tempCols, tempRows, 0);
-      // カスタム設定を反映
-      setCustomRows(tempRows);
-      setCustomCols(tempCols);
-      setCustomBombs(tempBombs);
-      bombboard = cleateBoard(tempCols, tempRows, 0);
-      inputboard = cleateBoard(tempCols, tempRows, 0);
-      setBombMap(bombboard);
-      setUserInputs(inputboard);
+      if (tempRows === null) return;
+      if (tempCols === null) return;
+
+      if (
+        tempBombs < 0 ||
+        tempBombs % 1 !== 0 ||
+        tempCols < 0 ||
+        tempCols % 1 !== 0 ||
+        tempRows < 0 ||
+        tempRows % 1 !== 0
+      ) {
+        alert('自然数で入力して下さい');
+        return;
+      } else {
+        bombboard = cleateBoard(tempCols, tempRows, 0);
+        bombboard = cleateBoard(tempCols, tempRows, 0);
+        // カスタム設定を反映
+        setCustomRows(tempRows);
+        setCustomCols(tempCols);
+        setCustomBombs(tempBombs);
+        bombboard = cleateBoard(tempCols, tempRows, 0);
+        inputboard = cleateBoard(tempCols, tempRows, 0);
+        setBombMap(bombboard);
+        setUserInputs(inputboard);
+      }
     }
   };
 
@@ -253,7 +267,6 @@ const Home = () => {
     if ((newUserInputs[y][x] !== 2 && userInput === 0) || userInput === 2) {
       newUserInputs[y][x] = 1;
       if (board[y][x] === -1 && bombMap[y][x] === 1) {
-        // alert('GameOver');
         setGameOver(true);
         openBombs();
         setBackgroundPosition('-390px');
@@ -320,6 +333,16 @@ const Home = () => {
     );
   };
 
+  const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTempRows(Number(e.target.value));
+  };
+  const handleColsChange = (f: React.ChangeEvent<HTMLInputElement>) => {
+    setTempCols(Number(f.target.value));
+  };
+  const handleBombChange = (g: React.ChangeEvent<HTMLInputElement>) => {
+    setTempBombs(Number(g.target.value));
+  };
+
   return (
     <div className={styles.minesweeper}>
       <div className={styles.header}>
@@ -351,61 +374,12 @@ const Home = () => {
         </div>
         {difficuly === 4 && (
           <div className={styles.customSettings}>
-            <label>
-              高さ:
-              <input
-                type="number"
-                value={tempRows}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value > 100) {
-                    alert(`縦列の最大数は100です`);
-                  }
-                  if (value % 1 !== 0 || value < 0) {
-                    alert(`自然数を入力してください`);
-                  } else {
-                    setTempRows(value);
-                  }
-                }}
-              />
-            </label>
-            <label>
-              幅:
-              <input
-                type="number"
-                value={tempCols}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value > 100) {
-                    alert(`横列の最大数は100です`);
-                  }
-                  if (value % 1 !== 0 || value < 0) {
-                    alert(`自然数を入力してください`);
-                  } else {
-                    setTempCols(value);
-                  }
-                }}
-              />
-            </label>
-            <label>
-              爆弾数:
-              <input
-                type="number"
-                value={tempBombs}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  const maxBombs = tempCols * tempRows - 1;
-                  if (value > maxBombs) {
-                    alert(`爆弾の最大数は${maxBombs}です`);
-                    setTempBombs(maxBombs);
-                  } else if (value % 1 !== 0 || value < 0) {
-                    alert(`自然数を入力してください`);
-                  } else {
-                    setTempBombs(value);
-                  }
-                }}
-              />
-            </label>
+            <label>幅：</label>
+            <input type="number" onChange={handleRowsChange} />
+            <label>高さ：</label>
+            <input type="number" onChange={handleColsChange} />
+            <label>爆弾数：</label>
+            <input type="number" onChange={handleBombChange} />
             <button onClick={() => reset(4)}>設定して開始</button>
           </div>
         )}
