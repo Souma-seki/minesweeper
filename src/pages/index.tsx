@@ -85,6 +85,7 @@ const Home = () => {
         inputboard = cleateBoard(tempCols, tempRows, 0);
         setBombMap(bombboard);
         setUserInputs(inputboard);
+        setCustomBoardWidth(tempCols * 30 + 50);
       }
     }
   };
@@ -130,6 +131,7 @@ const Home = () => {
   const [gameOver, setGameOver] = useState(false);
   const [timer, setTimer] = useState(0);
   const [backgroundPosition, setBackgroundPosition] = useState('-330px');
+  const [customBoardWidth, setCustomBoardWidth] = useState(270); // 初期値を設定
 
   //初回クリックの時
   const First = () => !bombMap.flat().includes(1);
@@ -399,8 +401,8 @@ const Home = () => {
           </div>
         )}
         <div
-          className={`${difficuly === 1 ? styles.topflame1 : ''} ${difficuly === 2 ? styles.topflame2 : ''} ${difficuly === 3 ? styles.topflame3 : ''} ${difficuly === 4 ? styles.topflame4 : ''}`}
-          onClick={() => reset(difficuly)}
+          className={`${styles.topflame} ${styles[`topflame${difficuly}`]}`}
+          style={difficuly === 4 ? { width: `${customBoardWidth}px` } : {}}
         >
           <div className={styles.counter}>{bombcount - flagCount()}</div>
           <button
