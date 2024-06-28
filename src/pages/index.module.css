@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
+  width: fit-content;
 }
 
 .topflame1,
@@ -24,14 +24,28 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 300px;
   height: 74px;
-  margin-bottom: 10px;
   background-color: #c6c6c6;
   border-top: 6px solid #808080;
   border-right: 6px solid white;
   border-bottom: 6px solid white;
   border-left: 6px solid gray;
+}
+
+.topflame1 {
+  width: 300px; /* 初級の幅 */
+}
+
+.topflame2 {
+  width: 515px; /* 中級の幅 */
+}
+
+.topflame3 {
+  width: 945px; /* 上級の幅 */
+}
+
+.topflame4 {
+  width: auto; /* カスタムの幅を自動調整 */
 }
 
 .timer,

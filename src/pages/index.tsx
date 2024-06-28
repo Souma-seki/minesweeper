@@ -220,26 +220,41 @@ const Home = () => {
 
   //空白連鎖
   const blank = (x: number, y: number) => {
-    let count = 0;
-    for (const direction of directions) {
-      const [dx, dy] = direction;
-      const nx = x + dx;
-      const ny = y + dy;
-      if (board[ny] !== undefined && board[ny][nx] !== undefined) {
-        if (newBombMap[ny][nx] === 1) {
-          count++;
-        }
-      }
-    }
-    board[y][x] = count;
-    newUserInputs[y][x] = 1;
-    if (count === 0) {
+    const stack: [number, number][] = [[x, y]];
+
+    while (stack.length > 0) {
+      const now = stack.pop();
+      if (!now) continue;
+      const [cx, cy] = now;
+
+      let count = 0;
+
       for (const direction of directions) {
         const [dx, dy] = direction;
-        const nx = x + dx;
-        const ny = y + dy;
-        if (board[ny] !== undefined && board[ny][nx] !== undefined && newUserInputs[ny][nx] === 0) {
-          blank(nx, ny);
+        const nx = cx + dx;
+        const ny = cy + dy;
+        if (board[ny] !== undefined && board[ny][nx] !== undefined) {
+          if (newBombMap[ny][nx] === 1) {
+            count++;
+          }
+        }
+      }
+
+      board[cy][cx] = count;
+      newUserInputs[cy][cx] = 1;
+
+      if (count === 0) {
+        for (const direction of directions) {
+          const [dx, dy] = direction;
+          const nx = cx + dx;
+          const ny = cy + dy;
+          if (
+            board[ny] !== undefined &&
+            board[ny][nx] !== undefined &&
+            newUserInputs[ny][nx] === 0
+          ) {
+            stack.push([nx, ny]);
+          }
         }
       }
     }
@@ -374,9 +389,9 @@ const Home = () => {
         </div>
         {difficuly === 4 && (
           <div className={styles.customSettings}>
-            <label>幅：</label>
-            <input type="number" onChange={handleRowsChange} />
             <label>高さ：</label>
+            <input type="number" onChange={handleRowsChange} />
+            <label>幅：</label>
             <input type="number" onChange={handleColsChange} />
             <label>爆弾数：</label>
             <input type="number" onChange={handleBombChange} />
