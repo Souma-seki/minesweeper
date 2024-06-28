@@ -57,12 +57,13 @@ const Home = () => {
       setBombMap(bombboard);
       setUserInputs(inputboard);
     } else if (difficuly === 4) {
-      const maxBombs = customCols * customRows - 1;
+      const maxBombs = tempCols * tempRows - 1;
       if (customBombs > maxBombs) {
         alert(`爆弾の最大数は${maxBombs}です`);
+        setTempBombs(maxBombs);
         return;
       }
-      bombboard = cleateBoard(customCols, customRows, 0);
+      bombboard = cleateBoard(tempCols, tempRows, 0);
       // カスタム設定を反映
       setCustomRows(tempRows);
       setCustomCols(tempCols);
@@ -392,13 +393,12 @@ const Home = () => {
                 type="number"
                 value={tempBombs}
                 onChange={(e) => {
-                  const maxBombs = tempCols * tempRows - 1;
                   const value = Number(e.target.value);
+                  const maxBombs = tempCols * tempRows - 1;
                   if (value > maxBombs) {
                     alert(`爆弾の最大数は${maxBombs}です`);
                     setTempBombs(maxBombs);
-                  }
-                  if (value % 1 !== 0 || value < 0) {
+                  } else if (value % 1 !== 0 || value < 0) {
                     alert(`自然数を入力してください`);
                   } else {
                     setTempBombs(value);
