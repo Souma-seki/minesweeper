@@ -40,7 +40,7 @@ const Home = () => {
   const reset = (difficuly: number) => {
     setGameOver(false);
     setTimer(0);
-    setBackgroundPosition('-330px');
+    setBackgroundPosition('-332px');
     if (difficuly === 1) {
       bombboard = cleateBoard(9, 9, 0);
       inputboard = cleateBoard(9, 9, 0);
@@ -130,7 +130,7 @@ const Home = () => {
   const newUserInputs = structuredClone(userInputs);
   const [gameOver, setGameOver] = useState(false);
   const [timer, setTimer] = useState(0);
-  const [backgroundPosition, setBackgroundPosition] = useState('-330px');
+  const [backgroundPosition, setBackgroundPosition] = useState('-332px');
   const [customBoardWidth, setCustomBoardWidth] = useState(270); // 初期値を設定
 
   //初回クリックの時
@@ -155,9 +155,9 @@ const Home = () => {
   useEffect(() => {
     if (isFailure || clear) {
       if (isFailure) {
-        setBackgroundPosition('-390px');
+        setBackgroundPosition('-392px');
       } else if (clear) {
-        setBackgroundPosition('-360px');
+        setBackgroundPosition('-362px');
       }
       return;
     }
@@ -286,7 +286,7 @@ const Home = () => {
       if (board[y][x] === -1 && bombMap[y][x] === 1) {
         setGameOver(true);
         openBombs();
-        setBackgroundPosition('-390px');
+        setBackgroundPosition('-392px');
         return;
       }
       const bombCount = bombCounts(x, y);
@@ -419,6 +419,10 @@ const Home = () => {
               setBombMap(newBombMap);
               setUserInputs(newUserInputs);
               clearInterval(timer);
+              setTimer(0);
+              setGameOver(false);
+
+              setTimeout(() => setBackgroundPosition('-332px'), 100);
             }}
           />
           <div className={styles.timer}>{timer}</div>
