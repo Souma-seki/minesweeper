@@ -223,14 +223,11 @@ const Home = () => {
   //空白連鎖
   const blank = (x: number, y: number) => {
     const stack: [number, number][] = [[x, y]];
-
     while (stack.length > 0) {
       const now = stack.pop();
       if (!now) continue;
       const [cx, cy] = now;
-
       let count = 0;
-
       for (const direction of directions) {
         const [dx, dy] = direction;
         const nx = cx + dx;
@@ -421,7 +418,6 @@ const Home = () => {
               clearInterval(timer);
               setTimer(0);
               setGameOver(false);
-
               setTimeout(() => setBackgroundPosition('-332px'), 100);
             }}
           />
