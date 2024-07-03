@@ -337,14 +337,18 @@ const Home = () => {
 
   //爆弾表示
   const renderBomb = () => {
-    return (
-      <div
-        className={styles.sampleStyle}
-        style={{
-          backgroundPosition: '-300px',
-        }}
-      />
-    );
+    for (let y = 0; y < bombMap.length; y++) {
+      for (let x = 0; x < bombMap[y].length; x++)
+        return (
+          <div
+            className={styles.sampleStyle}
+            style={{
+              backgroundPosition: '-300px',
+              backgroundColor: board[y][x] === 12 ? 'red' : '', // ここで背景色を赤に設定
+            }}
+          />
+        );
+    }
   };
 
   const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
